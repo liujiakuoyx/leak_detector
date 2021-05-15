@@ -57,7 +57,7 @@ LeakDetector().onLeakedStream.listen((LeakedInfo info) {
 Preview page display:
 
 <center class="half">
-  <img src="https://github.com/liujiakuoyx/leak_detector/blob/main/images/image1.png" width="280"/>&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://github.com/liujiakuoyx/leak_detector/blob/main/images/image4.png" width="280"/>&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://github.com/liujiakuoyx/leak_detector/blob/main/images/image2.png" width="280"/> 
+  <img src="https://liujiakuoyx.github.io/images/leak_detector/image1.png" width="280"/>&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://liujiakuoyx.github.io/images/leak_detector/image4.png" width="280"/>&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://liujiakuoyx.github.io/images/leak_detector/image2.png" width="280"/> 
 </center>
 
 
@@ -75,5 +75,5 @@ getLeakedRecording().then((List<LeakedInfo> infoList) {
 
 
 <center class="half">
-  <img src="https://github.com/liujiakuoyx/leak_detector/blob/main/images/image3.png" width="300"/>
+  <img src="https://liujiakuoyx.github.io/images/leak_detector/image3.png" width="300"/>
 </center>
