@@ -7,7 +7,6 @@ import '../leak_data.dart';
 import 'bottom_popup_card.dart';
 import 'popup_window.dart';
 
-
 const _colorList = [Color(0xff1e7ce4), Color(0xffe4881e)];
 
 void showLeakedInfoPage(BuildContext context, LeakedInfo leakInfo) {
@@ -121,9 +120,8 @@ class _LeakPreviewPageState extends State<LeakPreviewPage> {
                     Expanded(
                       child: Visibility(
                         visible: _currentIndex > 0,
-                        child: FlatButton(
+                        child: TextButton(
                           onPressed: _showPrevious,
-                          height: 50,
                           child: Icon(
                             Icons.navigate_before_rounded,
                             color: Colors.white70,
@@ -133,9 +131,11 @@ class _LeakPreviewPageState extends State<LeakPreviewPage> {
                       ),
                     ),
                     Expanded(
-                      child: FlatButton(
+                      child: TextButton(
                         onPressed: _deleteFromDatabase,
-                        height: 50,
+                        style: ButtonStyle(
+                          padding: MaterialStateProperty.resolveWith((_) => EdgeInsets.all(0)),
+                        ),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -159,9 +159,8 @@ class _LeakPreviewPageState extends State<LeakPreviewPage> {
                     Expanded(
                       child: Visibility(
                         visible: _currentIndex < widget.leakInfoList.length - 1,
-                        child: FlatButton(
+                        child: TextButton(
                           onPressed: _showNext,
-                          height: 50,
                           child: Icon(
                             Icons.navigate_next_rounded,
                             color: Colors.white70,

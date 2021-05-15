@@ -1,3 +1,7 @@
+## 0.1.2+1-bate
+
+* TODO: change `FlatButton` to `TextButton`
+
 ## 0.1.2-bate
 
 * TODO: Update README.md
