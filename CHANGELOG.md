@@ -1,11 +1,11 @@
-## 0.1.0-bate
+## 0.1.2-bate
 
-* TODO: Increase the basic memory leak detection function, provide `State`, `Element` memory leak detection, provide preview page, leak record storage function.
+* TODO: Update README.md
 
 ## 0.1.1-bate
 
 * TODO: Add document description
 
-## 0.1.2-bate
+## 0.1.0-bate
 
-* TODO: Update README.md
+* TODO: Increase the basic memory leak detection function, provide `State`, `Element` memory leak detection, provide preview page, leak record storage function.
