@@ -56,9 +56,9 @@ LeakDetector().onLeakedStream.listen((LeakedInfo info) {
 
 Preview page display:
 
-![image](https://liujiakuoyx.github.io/images/leak_detector/image1.png =280)
-![image](https://liujiakuoyx.github.io/images/leak_detector/image4.png =280)
-![image](https://liujiakuoyx.github.io/images/leak_detector/image2.png =280)
+![image](https://liujiakuoyx.github.io/images/leak_detector/image1.png){:height="40%" width="40%"}
+![image](https://liujiakuoyx.github.io/images/leak_detector/image4.png){:height="40%" width="40%"}
+![image](https://liujiakuoyx.github.io/images/leak_detector/image2.png){:height="40%" width="40%"}
 
 
 It contains the class information of the reference chain node, the referenced attribute information, the source code of the attribute declaration, and the location of the source code (line number: column number).
@@ -74,4 +74,4 @@ getLeakedRecording().then((List<LeakedInfo> infoList) {
 ```
 
 
-![image](https://liujiakuoyx.github.io/images/leak_detector/image3.png =280)
+![image](https://liujiakuoyx.github.io/images/leak_detector/image3.png){:height="40%" width="40%"}
