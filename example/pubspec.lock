@@ -73,7 +73,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.1.3-bate"
+    version: "0.1.2+1-bate"
   matcher:
     dependency: transitive
     description:
