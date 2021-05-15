@@ -1,6 +1,6 @@
 name: leak_detector
 description: This is a plug-in used to detect page memory leaks. You can use it to detect whether there is a memory leak in `State` and `StatefulElement`. If there is a memory leak, it will provide the reference chain of the object for you to analyze. And support to read historical memory leak records.
-version: 0.1.1-bate
+version: 0.1.2-bate
 author: Liu
 repository: https://github.com/liujiakuoyx/leak_detector.git
 

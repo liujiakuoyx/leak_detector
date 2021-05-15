@@ -5,3 +5,7 @@
 ## 0.1.1-bate
 
 * TODO: Add document description
+
+## 0.1.2-bate
+
+* TODO: Update README.md
