@@ -58,7 +58,7 @@ LeakDetector().onLeakedStream.listen((LeakedInfo info) {
 页面展示效果如下:
 
 <center class="half">
-  <img src="image1.png" width="280"/>&nbsp;&nbsp;&nbsp;&nbsp;<img src="image4.png" width="280"/>&nbsp;&nbsp;&nbsp;&nbsp;<img src="image2.png" width="280"/> 
+  <img src="https://github.com/liujiakuoyx/leak_detector/blob/main/images/image1.png" width="280"/>&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://github.com/liujiakuoyx/leak_detector/blob/main/images/image4.png" width="280"/>&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://github.com/liujiakuoyx/leak_detector/blob/main/images/image2.png" width="280"/> 
 </center>
 
 
@@ -76,5 +76,5 @@ getLeakedRecording().then((List<LeakedInfo> infoList) {
 
 
 <center class="half">
-  <img src="image3.png" width="300"/>
+  <img src="https://github.com/liujiakuoyx/leak_detector/blob/main/images/image3.png" width="300"/>
 </center>
