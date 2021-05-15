@@ -17,9 +17,17 @@ typedef LeakEventListener = void Function(DetectorEvent event);
 ///泄漏检测主要工具类
 class LeakDetector {
   static LeakDetector _instance;
+
+  ///[VmService.getRetainingPath]limit
   static int maxRetainingPath;
+
+  ///detected object
   Map<String, Expando> _watchGroup = {};
+
+  ///Queue to detect memory leaks, first in, first out
   Queue<DetectorTask> _checkTaskQueue = Queue();
+
+  ///Notify after a memory leak
   StreamController<LeakedInfo> _onLeakedStreamController = StreamController.broadcast();
   StreamController<DetectorEvent> _onEventStreamController = StreamController.broadcast();
 
@@ -40,12 +48,13 @@ class LeakDetector {
 
   LeakDetector._() {
     assert(() {
-      VmServerUtils().getVmService();
-      onLeakedStream.listen(saveLeakedRecord);
+      VmServerUtils().getVmService(); //connect VmService
+      onLeakedStream.listen(saveLeakedRecord); //add a listener, save leaked record
       return true;
     }());
   }
 
+  ///Start to detect whether there is a memory leak
   ensureReleaseAsync(String group, {int delay = 0}) async {
     Expando expando = _watchGroup[group];
     _watchGroup.remove(group);
@@ -64,7 +73,7 @@ class LeakDetector {
               _currentTask = null;
               _checkStartTask();
               //notify listeners
-              if(leakInfo != null && leakInfo.isNotEmpty) {
+              if (leakInfo != null && leakInfo.isNotEmpty) {
                 _onLeakedStreamController.add(leakInfo);
               }
             },
@@ -114,6 +123,7 @@ class LeakDetector {
   }
 }
 
+///Detector internal events
 class DetectorEvent {
   final DetectorEventType type;
   final dynamic data;
@@ -127,7 +137,7 @@ class DetectorEvent {
 }
 
 enum DetectorEventType {
-  addObject,
+  addObject, //add a object
   check,
   startGC,
   endGc,

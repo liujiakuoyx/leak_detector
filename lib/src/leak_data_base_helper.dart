@@ -36,7 +36,7 @@ class _LeakDataBase {
 class _LeakRecordingTable {
   static const String _kTableName = 'leak_recording_table';
   static const String _kGCRootType = 'gcType';
-  static const String _kLeakPathJson = 'leakPath';
+  static const String _kLeakPathJson = 'leakPath'; //leaked path to json
   static const String _kId = '_id'; //time
 }
 

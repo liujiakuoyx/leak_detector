@@ -4,7 +4,7 @@ flutter Memory leak detection tool
 
 ## Usage
 
-#### 初始化
+#### initialize
 
 In order to prevent the underlying library `vm service` from crashing, please call before adding the memory leak detection object:
 ```dart

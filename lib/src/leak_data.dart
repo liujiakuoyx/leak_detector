@@ -3,9 +3,17 @@
 
 import 'dart:convert';
 
+///Leak the reference chain and other information of the object
 class LeakedInfo {
+  ///Reference chain, if there are multiple reference chains, there is only one
   List<RetainingNode> retainingPath;
+
+  /// The type of GC root which is holding a reference to the specified object.
+  /// Possible values include:  * class table  * local handle  * persistent
+  /// handle  * stack  * user global  * weak persistent handle  * unknown
   String gcRootType;
+
+  ///Time to completion of leak detection
   int timestamp;
 
   LeakedInfo(this.retainingPath, this.gcRootType, {this.timestamp}) {
@@ -32,15 +40,15 @@ class LeakedInfo {
 
 ///leaked node info
 class RetainingNode {
-  String clazz;
-  String parentField;
+  String clazz; //class name
+  String parentField; //parentField
   bool important; //进过分析是否为重要的节点
-  String libraries;
-  String string;
-  String parentKey;
-  int parentIndex;
-  SourceCodeLocation sourceCodeLocation;
-  ClosureInfo closureInfo;
+  String libraries; //libraries name
+  String string; //object toString()
+  String parentKey; //if object in a Map,map's key
+  int parentIndex; //if object in a List,it is index in the List
+  SourceCodeLocation sourceCodeLocation; //source code, code location
+  ClosureInfo closureInfo; //if object is closure
 
   RetainingNode(
     this.clazz, {

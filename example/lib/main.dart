@@ -42,30 +42,22 @@ class _MyAppState extends State<MyApp> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              FlatButton(
+              TextButton(
                 onPressed: () {
                   Navigator.of(_navigatorKey.currentContext).push(MaterialPageRoute(builder: (_) => TestLeakPage()));
                 },
-                color: Colors.blue,
                 child: Text(
                   'jump',
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
                 ),
               ),
-              FlatButton(
+              TextButton(
                 onPressed: () {
                   getLeakedRecording().then((List<LeakedInfo> list) {
                     showLeakedInfoListPage(_navigatorKey.currentContext, list);
                   });
                 },
-                color: Colors.blue,
                 child: Text(
                   'read history',
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
                 ),
               ),
             ],
@@ -91,17 +83,13 @@ class TestLeakPageState extends State with StateLeakMixin {
         title: const Text('leaked page'),
       ),
       body: Center(
-        child: FlatButton(
+        child: TextButton(
           onPressed: () {
             //the 'context' is leaked
             Navigator.of(context).pop(context);
           },
-          color: Colors.blue,
           child: Text(
             'pop',
-            style: TextStyle(
-              color: Colors.white,
-            ),
           ),
         ),
       ),

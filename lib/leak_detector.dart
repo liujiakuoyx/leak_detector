@@ -11,4 +11,5 @@ export 'src/leak_state_mixin.dart';
 export 'src/view/leak_preview_page.dart';
 export 'src/leak_data.dart';
 
+///read historical leaked data
 Future<List<LeakedInfo>> getLeakedRecording() => LeakedRecordDatabaseHelper().queryAll();

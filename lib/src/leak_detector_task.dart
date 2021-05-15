@@ -27,6 +27,7 @@ abstract class _Task<T> {
 
   Future<T> run();
 
+  ///make sure to call after run
   void done(T result);
 }
 
@@ -64,6 +65,8 @@ class DetectorTask extends _Task<LeakedInfo> {
     return null;
   }
 
+  ///after Full GC, check whether there is a leak,
+  ///if there is an analysis of the leaked reference chain
   Future<LeakedInfo> _analyzeLeakedPathAfterGC() async {
     List<dynamic> weakPropertyList = await _getExpandoWeakPropertyList(expando);
     expando = null; //一定要释放引用
@@ -116,6 +119,7 @@ class DetectorTask extends _Task<LeakedInfo> {
     return [];
   }
 
+  ///get PropertyKey in [Expando]
   Future<InstanceRef> _getWeakPropertyKey(String weakPropertyId) async {
     if (weakPropertyId == null) return null;
     final weakPropertyObj = await VmServerUtils().getObjectInstanceById(weakPropertyId);

@@ -6,6 +6,8 @@ import 'leak_detector.dart';
 
 const int _defaultCheckLeakDelay = 500;
 
+///Used on [State], it can automatically detect whether
+///[State] and its corresponding [Stateful Element] will leak memory
 mixin StateLeakMixin<T extends StatefulWidget> on State<T> {
   ///daley check leak
   ///Sometimes some pages refer to delayed callback functions
@@ -31,6 +33,7 @@ mixin StateLeakMixin<T extends StatefulWidget> on State<T> {
   void dispose() {
     super.dispose();
     assert(() {
+      //start check
       LeakDetector().ensureReleaseAsync(watchGroup, delay: checkLeakDelayMill);
       return true;
     }());

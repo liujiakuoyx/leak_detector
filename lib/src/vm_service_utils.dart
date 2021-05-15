@@ -9,6 +9,7 @@ import 'package:vm_service/utils.dart';
 
 const String _findLibrary = 'package:leak_detector/src/vm_service_utils.dart';
 
+///VmServer api tools
 class VmServerUtils {
   static VmServerUtils _instance;
   bool _enable = false;
@@ -33,6 +34,7 @@ class VmServerUtils {
     }());
   }
 
+  ///get VmService's WebSocket uri
   Future<Uri> getObservatoryUri() async {
     if (_enable) {
       // _observatoryUri = await _channel.invokeMethod('getObservatoryUri');
@@ -42,6 +44,7 @@ class VmServerUtils {
     return _observatoryUri;
   }
 
+  ///VmService
   Future<VmService> getVmService() async {
     if (_vmService == null) {
       final uri = await getObservatoryUri();
@@ -59,6 +62,7 @@ class VmServerUtils {
     return _vm;
   }
 
+  ///find a [Library] on [Isolate]
   Future<LibraryRef> findLibrary(String uri) async {
     Isolate mainIsolate = await findMainIsolate();
     final libraries = mainIsolate.libraries;
@@ -71,6 +75,7 @@ class VmServerUtils {
     return null;
   }
 
+  ///find main Isolate in VM
   Future<Isolate> findMainIsolate() async {
     IsolateRef ref;
     final vm = await getVM();
@@ -84,6 +89,7 @@ class VmServerUtils {
     return vms.getIsolate(ref.id);
   }
 
+  ///get ObjectId in VM by Object
   Future<String> getObjectId(dynamic obj) async {
     final library = await findLibrary(_findLibrary);
     final vms = await getVmService();
@@ -110,6 +116,7 @@ class VmServerUtils {
     return null;
   }
 
+  ///[VmService.invokeMethod]
   Future<String> invokeMethod(String targetId, String method, List<String> argumentIds) async {
     final vms = await getVmService();
     if (vms == null) return null;
@@ -156,6 +163,7 @@ class VmServerUtils {
     return null;
   }
 
+  ///[VmService.getRetainingPath]
   Future<RetainingPath> getRetainingPath(String objId, int limit) async {
     final vms = await getVmService();
     if (vms == null) return null;
@@ -163,6 +171,7 @@ class VmServerUtils {
     return vms.getRetainingPath(mainIsolate.id, objId, limit);
   }
 
+  ///start full gc
   Future startGCAsync() async {
     final vms = await getVmService();
     if (vms == null) return null;
