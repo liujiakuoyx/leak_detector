@@ -42,7 +42,8 @@ class _MyAppState extends State<MyApp> {
             children: [
               TextButton(
                 onPressed: () {
-                  Navigator.of(_navigatorKey.currentContext).push(MaterialPageRoute(builder: (_) => TestLeakPage()));
+                  Navigator.of(_navigatorKey.currentContext)
+                      .push(MaterialPageRoute(builder: (_) => TestLeakPage()));
                 },
                 child: Text(
                   'jump',

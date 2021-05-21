@@ -42,7 +42,8 @@ mixin StateLeakMixin<T extends StatefulWidget> on State<T> {
   //add obj into the group
   watchObjectLeak(Object obj) {
     assert(() {
-      LeakDetector().addWatchObject(obj, watchGroup); //'hashCode' is check group key
+      LeakDetector()
+          .addWatchObject(obj, watchGroup); //'hashCode' is check group key
       return true;
     }());
   }

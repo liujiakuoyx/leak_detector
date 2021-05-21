@@ -87,7 +87,8 @@ class RetainingNode {
     parentIndex = json['parentIndex'];
     string = json['string'];
     if (json['sourceCodeLocation'] is Map) {
-      sourceCodeLocation = SourceCodeLocation.fromJson(json['sourceCodeLocation']);
+      sourceCodeLocation =
+          SourceCodeLocation.fromJson(json['sourceCodeLocation']);
     }
     parentField = json['parentField'];
     libraries = json['libraries'];
@@ -106,7 +107,8 @@ class SourceCodeLocation {
   String? className;
   String? uri; //lib uri
 
-  SourceCodeLocation(this.code, this.lineNum, this.columnNum, this.className, this.uri);
+  SourceCodeLocation(
+      this.code, this.lineNum, this.columnNum, this.className, this.uri);
 
   SourceCodeLocation.fromJson(Map<String, dynamic> json) {
     code = json['code'];

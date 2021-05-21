@@ -10,7 +10,8 @@ void main() async {
   ServiceProtocolInfo info = await Service.getInfo();
   var serverUri = info.serverUri;
   if (serverUri != null) {
-    VmService vmService = await vmServiceConnectUri(convertToWebSocketUrl(serviceProtocolUrl: serverUri).toString());
+    VmService vmService = await vmServiceConnectUri(
+        convertToWebSocketUrl(serviceProtocolUrl: serverUri).toString());
     print('success ${(await vmService.getVM()).version}');
   }
 }

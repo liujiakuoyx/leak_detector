@@ -16,7 +16,8 @@ void showLeakedInfoPage(BuildContext context, LeakedInfo leakInfo) {
   );
 }
 
-void showLeakedInfoListPage(BuildContext context, List<LeakedInfo> leakInfoList) {
+void showLeakedInfoListPage(
+    BuildContext context, List<LeakedInfo> leakInfoList) {
   if (leakInfoList.isEmpty) return;
   BottomPopupCard.show(
     context,
@@ -30,7 +31,8 @@ const double _infoCardMinHeight = 180;
 class LeakPreviewPage extends StatefulWidget {
   final List<LeakedInfo> leakInfoList;
 
-  const LeakPreviewPage({Key? key, required this.leakInfoList}) : super(key: key);
+  const LeakPreviewPage({Key? key, required this.leakInfoList})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -128,7 +130,8 @@ class _LeakPreviewPageState extends State<LeakPreviewPage> {
                       child: TextButton(
                         onPressed: _deleteFromDatabase,
                         style: ButtonStyle(
-                          padding: MaterialStateProperty.resolveWith((_) => EdgeInsets.all(0)),
+                          padding: MaterialStateProperty.resolveWith(
+                              (_) => EdgeInsets.all(0)),
                         ),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -176,7 +179,9 @@ class _LeakPreviewPageState extends State<LeakPreviewPage> {
   Widget _node(RetainingNode node, bool isFirst, bool isLast, Color lineColor) {
     final hasField = node.parentField != null;
     final hasSourceCodeLocation = node.sourceCodeLocation != null;
-    final hasMoreInfo = node.parentKey != null || node.parentIndex != null || hasSourceCodeLocation;
+    final hasMoreInfo = node.parentKey != null ||
+        node.parentIndex != null ||
+        hasSourceCodeLocation;
     final last = isLast && !hasMoreInfo;
     final height = node.closureInfo != null ? 72.0 : 64.0;
     return Column(
@@ -217,7 +222,9 @@ class _LeakPreviewPageState extends State<LeakPreviewPage> {
                             text: node.parentField ?? '',
                             style: TextStyle(
                               // color: node.important ? Color(0xFFE4EB84) : Color(0xFFC0BEEA),
-                              color: isFirst ? Color(0xFFE4EB84) : Color(0xFFC0BEEA),
+                              color: isFirst
+                                  ? Color(0xFFE4EB84)
+                                  : Color(0xFFC0BEEA),
                               fontSize: 16,
                               fontWeight: FontWeight.normal,
                             ),
@@ -245,7 +252,8 @@ class _LeakPreviewPageState extends State<LeakPreviewPage> {
                           text: 'Closure',
                           children: [
                             TextSpan(
-                              text: '\u00A0\u00A0funName:${node.closureInfo?.closureFunctionName ?? ''}',
+                              text:
+                                  '\u00A0\u00A0funName:${node.closureInfo?.closureFunctionName ?? ''}',
                               style: TextStyle(
                                 color: Color(0xFFC0BEEA),
                                 fontSize: 16,
@@ -271,7 +279,8 @@ class _LeakPreviewPageState extends State<LeakPreviewPage> {
                           children: [
                             if (node.closureInfo?.funLine != null)
                               TextSpan(
-                                text: '#${node.closureInfo?.funLine}:${node.closureInfo?.funColumn}',
+                                text:
+                                    '#${node.closureInfo?.funLine}:${node.closureInfo?.funColumn}',
                                 style: TextStyle(
                                   color: Color(0xFFE7D28F),
                                   fontSize: 13,
@@ -346,7 +355,8 @@ class _LeakPreviewPageState extends State<LeakPreviewPage> {
                           ),
                           if (node.sourceCodeLocation?.lineNum != null)
                             TextSpan(
-                              text: '#${node.sourceCodeLocation?.className ?? ''}',
+                              text:
+                                  '#${node.sourceCodeLocation?.className ?? ''}',
                               style: TextStyle(
                                 color: Color(0xFF7BB2DF),
                                 fontSize: 17,
@@ -355,7 +365,8 @@ class _LeakPreviewPageState extends State<LeakPreviewPage> {
                             ),
                           if (node.sourceCodeLocation?.lineNum != null)
                             TextSpan(
-                              text: '#${node.sourceCodeLocation?.lineNum}:${node.sourceCodeLocation?.columnNum}',
+                              text:
+                                  '#${node.sourceCodeLocation?.lineNum}:${node.sourceCodeLocation?.columnNum}',
                               style: TextStyle(
                                 color: Color(0xFFE7D28F),
                                 fontSize: 17,
@@ -565,12 +576,14 @@ class NodeCustomPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     if (hasPre) {
-      canvas.drawLine(Offset(size.width / 2, 0), Offset(size.width / 2, size.height / 2), _paint);
+      canvas.drawLine(Offset(size.width / 2, 0),
+          Offset(size.width / 2, size.height / 2), _paint);
     } else {
       canvas.drawCircle(Offset(size.width / 2, size.height / 2), 6, _paint);
     }
     if (hasNext) {
-      canvas.drawLine(Offset(size.width / 2, size.height / 2), Offset(size.width / 2, size.height), _paint);
+      canvas.drawLine(Offset(size.width / 2, size.height / 2),
+          Offset(size.width / 2, size.height), _paint);
       if (hasPre) {
         drawArrow(canvas, size);
       }
@@ -583,8 +596,10 @@ class NodeCustomPainter extends CustomPainter {
   }
 
   void drawArrow(Canvas canvas, Size size) {
-    canvas.drawLine(Offset(size.width / 2, size.height / 2), Offset(size.width / 2 + 8, size.height / 2 - 10), _paint);
-    canvas.drawLine(Offset(size.width / 2, size.height / 2), Offset(size.width / 2 - 8, size.height / 2 - 10), _paint);
+    canvas.drawLine(Offset(size.width / 2, size.height / 2),
+        Offset(size.width / 2 + 8, size.height / 2 - 10), _paint);
+    canvas.drawLine(Offset(size.width / 2, size.height / 2),
+        Offset(size.width / 2 - 8, size.height / 2 - 10), _paint);
   }
 }
 
@@ -606,7 +621,8 @@ class _ClassInfoButtonState extends State<_ClassInfoButton> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        PopupWindow.show(context, _infoCard(widget.nodeData), offset: Offset(-_infoCardWidth, 0), onResult: (_) {
+        PopupWindow.show(context, _infoCard(widget.nodeData),
+            offset: Offset(-_infoCardWidth, 0), onResult: (_) {
           setState(() {
             _selected = false;
           });
@@ -634,7 +650,8 @@ class _ClassInfoButtonState extends State<_ClassInfoButton> {
         color: Color(0xFF686C72),
         borderRadius: BorderRadius.all(Radius.circular(10)),
       ),
-      constraints: BoxConstraints(minHeight: _infoCardMinHeight, maxHeight: _infoCardMinHeight * 2),
+      constraints: BoxConstraints(
+          minHeight: _infoCardMinHeight, maxHeight: _infoCardMinHeight * 2),
       child: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,

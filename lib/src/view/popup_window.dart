@@ -24,13 +24,15 @@ class PopupWindow {
     final RenderBox? targetRender = target.findRenderObject() as RenderBox?;
     // overlay管理一层层的Widget，储存了所有需要绘制的Widget
     // 这里可以理解为整个屏幕绘制的Box，即当前整个屏幕
-    final RenderBox? overlay = Overlay.of(target)?.context.findRenderObject() as RenderBox?;
+    final RenderBox? overlay =
+        Overlay.of(target)?.context.findRenderObject() as RenderBox?;
     if (targetRender != null && overlay != null) {
       // 获取参考widget在overlay（屏幕）中相对位置
       final RelativeRect position = RelativeRect.fromRect(
         Rect.fromPoints(
           targetRender.localToGlobal(Offset.zero, ancestor: overlay),
-          targetRender.localToGlobal(targetRender.size.bottomRight(Offset.zero), ancestor: overlay),
+          targetRender.localToGlobal(targetRender.size.bottomRight(Offset.zero),
+              ancestor: overlay),
         ),
         Offset.zero & overlay.size,
       );
@@ -134,8 +136,16 @@ class _PopupWindowRoute<T> extends PopupRoute<T> {
   @override
   final String barrierLabel;
 
-  _PopupWindowRoute(this.position, this.child, this.elevation, this.barrierLabel, this.duration, this.alignment,
-      this.offset, this._barrierDismissible, this._barrierColor);
+  _PopupWindowRoute(
+      this.position,
+      this.child,
+      this.elevation,
+      this.barrierLabel,
+      this.duration,
+      this.alignment,
+      this.offset,
+      this._barrierDismissible,
+      this._barrierColor);
 
   // 背景颜色，默认为空
   // 这里可以支持使用半透明背景
@@ -147,8 +157,10 @@ class _PopupWindowRoute<T> extends PopupRoute<T> {
   bool get barrierDismissible => _barrierDismissible;
 
   @override
-  Widget buildPage(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
-    final CurveTween opacity = CurveTween(curve: const Interval(0.0, 1.0 / 3.0));
+  Widget buildPage(BuildContext context, Animation<double> animation,
+      Animation<double> secondaryAnimation) {
+    final CurveTween opacity =
+        CurveTween(curve: const Interval(0.0, 1.0 / 3.0));
     // CustomSingleChildLayout提供一个delegate来约束child
     return CustomSingleChildLayout(
       delegate: _PopupMenuLayout(position, alignment, offset),
@@ -172,8 +184,9 @@ class _PopupWindowRoute<T> extends PopupRoute<T> {
 
   // 显示动画时长
   @override
-  Duration get transitionDuration =>
-      duration == null || duration == 0 ? _kWindowDuration : Duration(milliseconds: duration!);
+  Duration get transitionDuration => duration == null || duration == 0
+      ? _kWindowDuration
+      : Duration(milliseconds: duration!);
 }
 
 class _PopupMenuLayout extends SingleChildLayoutDelegate {
@@ -215,21 +228,25 @@ class _PopupMenuLayout extends SingleChildLayoutDelegate {
         case PopupWindowAlign.centerRight:
           //centerRight
           x = size.width - position.right;
-          y = (position.top + size.height - position.bottom) / 2 - childSize.height / 2;
+          y = (position.top + size.height - position.bottom) / 2 -
+              childSize.height / 2;
           break;
         case PopupWindowAlign.topCenter:
           //topCenter
-          x = (position.left + size.width - position.right) / 2 - childSize.width / 2;
+          x = (position.left + size.width - position.right) / 2 -
+              childSize.width / 2;
           y = position.top - childSize.height;
           break;
         case PopupWindowAlign.centerLeft:
           //centerLeft
           x = position.left - childSize.width;
-          y = (position.top + size.height - position.bottom) / 2 - childSize.height / 2;
+          y = (position.top + size.height - position.bottom) / 2 -
+              childSize.height / 2;
           break;
         case PopupWindowAlign.bottomCenter:
           //bottomCenter
-          x = (position.left + size.width - position.right) / 2 - childSize.width / 2;
+          x = (position.left + size.width - position.right) / 2 -
+              childSize.width / 2;
           y = size.height - position.bottom;
           break;
       }
@@ -269,7 +286,8 @@ class _BottomPopupWindowRoute<T> extends PopupRoute<T> {
   final Color _barrierColor;
   final bool _barrierDismissible;
 
-  _BottomPopupWindowRoute(this.context, this.window, this.windowHeight, this._barrierColor, this._barrierDismissible);
+  _BottomPopupWindowRoute(this.context, this.window, this.windowHeight,
+      this._barrierColor, this._barrierDismissible);
 
   @override
   Duration get transitionDuration => const Duration(milliseconds: 200);
@@ -281,7 +299,8 @@ class _BottomPopupWindowRoute<T> extends PopupRoute<T> {
   Color get barrierColor => _barrierColor;
 
   @override
-  Widget buildPage(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+  Widget buildPage(BuildContext context, Animation<double> animation,
+      Animation<double> secondaryAnimation) {
     Widget bottomWindow = new MediaQuery.removePadding(
       context: context,
       removeTop: true,
@@ -290,7 +309,8 @@ class _BottomPopupWindowRoute<T> extends PopupRoute<T> {
         builder: (BuildContext context, Widget? child) {
           return ClipRect(
             child: CustomSingleChildLayout(
-              delegate: _BottomPopupWindowLayout(animation.value, contentHeight: windowHeight),
+              delegate: _BottomPopupWindowLayout(animation.value,
+                  contentHeight: windowHeight),
               child: window,
             ),
           );
@@ -302,7 +322,8 @@ class _BottomPopupWindowRoute<T> extends PopupRoute<T> {
   }
 
   @override
-  String get barrierLabel => MaterialLocalizations.of(context).modalBarrierDismissLabel;
+  String get barrierLabel =>
+      MaterialLocalizations.of(context).modalBarrierDismissLabel;
 }
 
 /// 左侧popupWindow的Route
@@ -313,8 +334,8 @@ class _LeftPopupWindowRoute<T> extends PopupRoute<T> {
   final Color _barrierColor;
   final bool _barrierDismissible;
 
-  _LeftPopupWindowRoute(
-      this.context, this.windowBuilder, this.windowWidth, this._barrierColor, this._barrierDismissible);
+  _LeftPopupWindowRoute(this.context, this.windowBuilder, this.windowWidth,
+      this._barrierColor, this._barrierDismissible);
 
   @override
   Duration get transitionDuration => const Duration(milliseconds: 200);
@@ -326,7 +347,8 @@ class _LeftPopupWindowRoute<T> extends PopupRoute<T> {
   Color get barrierColor => _barrierColor;
 
   @override
-  Widget buildPage(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+  Widget buildPage(BuildContext context, Animation<double> animation,
+      Animation<double> secondaryAnimation) {
     Widget bottomWindow = new MediaQuery.removePadding(
       context: context,
       removeTop: true,
@@ -335,7 +357,8 @@ class _LeftPopupWindowRoute<T> extends PopupRoute<T> {
         builder: (BuildContext context, Widget? child) {
           return ClipRect(
             child: CustomSingleChildLayout(
-              delegate: _LeftPopupWindowLayout(animation.value, contentWidth: windowWidth),
+              delegate: _LeftPopupWindowLayout(animation.value,
+                  contentWidth: windowWidth),
               child: windowBuilder(context),
             ),
           );
@@ -347,7 +370,8 @@ class _LeftPopupWindowRoute<T> extends PopupRoute<T> {
   }
 
   @override
-  String get barrierLabel => MaterialLocalizations.of(context).modalBarrierDismissLabel;
+  String get barrierLabel =>
+      MaterialLocalizations.of(context).modalBarrierDismissLabel;
 }
 
 abstract class _PopupWindowLayout extends SingleChildLayoutDelegate {
@@ -363,7 +387,8 @@ abstract class _PopupWindowLayout extends SingleChildLayoutDelegate {
 
 /// 底部弹窗布局
 class _BottomPopupWindowLayout extends _PopupWindowLayout {
-  _BottomPopupWindowLayout(double progress, {this.contentHeight}) : super(progress);
+  _BottomPopupWindowLayout(double progress, {this.contentHeight})
+      : super(progress);
 
   final double? contentHeight;
 
@@ -388,7 +413,8 @@ class _BottomPopupWindowLayout extends _PopupWindowLayout {
 
 /// 底部弹窗布局
 class _LeftPopupWindowLayout extends _PopupWindowLayout {
-  _LeftPopupWindowLayout(double progress, {this.contentWidth}) : super(progress);
+  _LeftPopupWindowLayout(double progress, {this.contentWidth})
+      : super(progress);
 
   final double? contentWidth;
 

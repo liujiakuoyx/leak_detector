@@ -28,8 +28,10 @@ class LeakDetector {
   Queue<DetectorTask> _checkTaskQueue = Queue();
 
   ///Notify after a memory leak
-  StreamController<LeakedInfo> _onLeakedStreamController = StreamController.broadcast();
-  StreamController<DetectorEvent> _onEventStreamController = StreamController.broadcast();
+  StreamController<LeakedInfo> _onLeakedStreamController =
+      StreamController.broadcast();
+  StreamController<DetectorEvent> _onEventStreamController =
+      StreamController.broadcast();
 
   DetectorTask? _currentTask;
 
@@ -49,7 +51,8 @@ class LeakDetector {
   LeakDetector._() {
     assert(() {
       VmServerUtils().getVmService(); //connect VmService
-      onLeakedStream.listen(saveLeakedRecord); //add a listener, save leaked record
+      onLeakedStream
+          .listen(saveLeakedRecord); //add a listener, save leaked record
       return true;
     }());
   }
@@ -68,7 +71,8 @@ class LeakDetector {
           DetectorTask(
             expando,
             sink: _onEventStreamController.sink,
-            onStart: () => _onEventStreamController.add(DetectorEvent(DetectorEventType.check, data: group)),
+            onStart: () => _onEventStreamController
+                .add(DetectorEvent(DetectorEventType.check, data: group)),
             onResult: (LeakedInfo? leakInfo) {
               _currentTask = null;
               _checkStartTask();
@@ -97,7 +101,8 @@ class LeakDetector {
   addWatchObject(Object obj, String group) {
     if (LeakDetector.maxRetainingPath == null) return;
 
-    _onEventStreamController.add(DetectorEvent(DetectorEventType.addObject, data: group));
+    _onEventStreamController
+        .add(DetectorEvent(DetectorEventType.addObject, data: group));
 
     _checkType(obj);
     String key = group;
@@ -114,8 +119,8 @@ class LeakDetector {
         (object is String) ||
         (object is Pointer) ||
         (object is Struct)) {
-      throw new ArgumentError.value(
-          object, "Expandos are not allowed on strings, numbers, booleans, null, Pointers, Structs or Unions.");
+      throw new ArgumentError.value(object,
+          "Expandos are not allowed on strings, numbers, booleans, null, Pointers, Structs or Unions.");
     }
   }
 }

@@ -5,4 +5,5 @@ import 'leak_data.dart';
 import 'leak_data_base_helper.dart';
 
 ///save leak info to database
-Function(LeakedInfo) saveLeakedRecord = (LeakedInfo leakInfo) => LeakedRecordDatabaseHelper().insert(leakInfo);
+Function(LeakedInfo) saveLeakedRecord =
+    (LeakedInfo leakInfo) => LeakedRecordDatabaseHelper().insert(leakInfo);

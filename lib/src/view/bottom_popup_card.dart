@@ -32,7 +32,8 @@ class _CardWidget extends StatefulWidget {
   }
 }
 
-class _CardWidgetState extends State<_CardWidget> with SingleTickerProviderStateMixin{
+class _CardWidgetState extends State<_CardWidget>
+    with SingleTickerProviderStateMixin {
   //手指滑动的高度
   double moveHeight = 0;
 
@@ -71,8 +72,9 @@ class _CardWidgetState extends State<_CardWidget> with SingleTickerProviderState
                       if (moveHeight < 0) moveHeight = 0; //最小值为0
                     });
                   },
-                  onVerticalDragEnd: (DragEndDetails details) =>
-                      isAnimForward ? {} : _popIfCan(details.primaryVelocity ?? 0.0),
+                  onVerticalDragEnd: (DragEndDetails details) => isAnimForward
+                      ? {}
+                      : _popIfCan(details.primaryVelocity ?? 0.0),
                   onVerticalDragCancel: () => isAnimForward ? {} : _popIfCan(),
                   child: Container(
                     color: Color(0xFF353535),
@@ -108,13 +110,17 @@ class _CardWidgetState extends State<_CardWidget> with SingleTickerProviderState
     //滑动距离阀值，或者速度阀值
     if (moveHeight > MAX_CLOSE_HEIGHT || velocity > MAX_CLOSE_VELOCITY) {
       //防止点击弹窗以外与cancel重复执行pop
-      if (ModalRoute.of(context)?.isCurrent ?? false) Navigator.of(context).pop();
+      if (ModalRoute.of(context)?.isCurrent ?? false)
+        Navigator.of(context).pop();
     } else {
       //没有滑动到关闭弹窗阀值，执行归位动画。
       isAnimForward = true; //动画执行状态
-      AnimationController controller = AnimationController(vsync: this, duration: Duration(milliseconds: 200));
-      CurvedAnimation curvedAnimation = CurvedAnimation(parent: controller, curve: Curves.easeOut);
-      Animation animation = Tween<double>(begin: moveHeight, end: 0).animate(curvedAnimation);
+      AnimationController controller = AnimationController(
+          vsync: this, duration: Duration(milliseconds: 200));
+      CurvedAnimation curvedAnimation =
+          CurvedAnimation(parent: controller, curve: Curves.easeOut);
+      Animation animation =
+          Tween<double>(begin: moveHeight, end: 0).animate(curvedAnimation);
       controller.forward(); //执行动画
       controller.addListener(() {
         setState(() {

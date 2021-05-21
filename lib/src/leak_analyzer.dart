@@ -18,8 +18,10 @@ class LeakAnalyzer {
     final leakedInstance = analyzeData.leakedInstance;
     final maxRetainingPath = analyzeData.maxRetainingPath;
     if (leakedInstance?.id != null && maxRetainingPath != null) {
-      final retainingPath = await VmServerUtils().getRetainingPath(leakedInstance!.id!, maxRetainingPath);
-      if (retainingPath?.elements != null && retainingPath!.elements!.isNotEmpty) {
+      final retainingPath = await VmServerUtils()
+          .getRetainingPath(leakedInstance!.id!, maxRetainingPath);
+      if (retainingPath?.elements != null &&
+          retainingPath!.elements!.isNotEmpty) {
         final retainingObjectList = retainingPath.elements!;
         try {
           List<RetainingNode> retainingPathList = [];
@@ -33,19 +35,23 @@ class LeakAnalyzer {
               Class? clazz;
               if (instanceRef.classRef?.id != null) {
                 //get class info
-                clazz = (await VmServerUtils().getObjectInstanceById(instanceRef.classRef!.id!)) as Class?;
+                clazz = (await VmServerUtils()
+                        .getObjectInstanceById(instanceRef.classRef!.id!))
+                    as Class?;
               }
 
               SourceCodeLocation? sourceCodeLocation;
               if (retainingObject.parentField != null && clazz != null) {
                 //parentField source code location
-                sourceCodeLocation = await _getSourceCodeLocation(retainingObject.parentField!, clazz);
+                sourceCodeLocation = await _getSourceCodeLocation(
+                    retainingObject.parentField!, clazz);
               }
 
               String? toString;
               if (instanceRef.id != null) {
                 //object toString
-                toString = await VmServerUtils().invokeMethod(instanceRef.id!, 'toString', []);
+                toString = await VmServerUtils()
+                    .invokeMethod(instanceRef.id!, 'toString', []);
               }
 
               //if is Map, get Key info.
@@ -54,7 +60,8 @@ class LeakAnalyzer {
               ClosureInfo? closureInfo;
               if (retainingObject.value?.json != null) {
                 //if is Closure,get ClosureInfo
-                closureInfo = await _getClosureInfo(Instance.parse(retainingObject.value!.json));
+                closureInfo = await _getClosureInfo(
+                    Instance.parse(retainingObject.value!.json));
               }
 
               retainingPathList.add(RetainingNode(
@@ -94,7 +101,8 @@ class LeakAnalyzer {
       }
     }
     if (clazz.superClass?.id != null) {
-      Class? superClass = (await VmServerUtils().getObjectInstanceById(clazz.superClass!.id!)) as Class?;
+      Class? superClass = (await VmServerUtils()
+          .getObjectInstanceById(clazz.superClass!.id!)) as Class?;
       return getFieldAndClassByName(superClass, name);
     } else {
       return null;
@@ -104,7 +112,8 @@ class LeakAnalyzer {
   static Future<String?> _getKeyInfo(RetainingObject retainingObject) async {
     String? keyString;
     if (retainingObject.parentMapKey?.id != null) {
-      Obj? keyObj = await VmServerUtils().getObjectInstanceById(retainingObject.parentMapKey!.id!);
+      Obj? keyObj = await VmServerUtils()
+          .getObjectInstanceById(retainingObject.parentMapKey!.id!);
       if (keyObj?.json != null) {
         Instance? keyInstance = Instance.parse(keyObj!.json!);
         if (keyInstance != null &&
@@ -124,26 +133,36 @@ class LeakAnalyzer {
     return keyString;
   }
 
-  static Future<SourceCodeLocation?> _getSourceCodeLocation(String? parentField, Class clazz) async {
+  static Future<SourceCodeLocation?> _getSourceCodeLocation(
+      String? parentField, Class clazz) async {
     SourceCodeLocation? sourceCodeLocation;
     if (parentField != null && clazz.name != '_Closure') {
       //get field and owner class
-      List? fieldAndClass = await getFieldAndClassByName(clazz, Uri.encodeQueryComponent(parentField));
+      List? fieldAndClass = await getFieldAndClassByName(
+          clazz, Uri.encodeQueryComponent(parentField));
       if (fieldAndClass != null) {
         FieldRef fieldRef = fieldAndClass[0];
         Class fieldClass = fieldAndClass[1];
         if (fieldRef.id != null) {
-          Field? field = (await VmServerUtils().getObjectInstanceById(fieldRef.id!)) as Field?;
+          Field? field = (await VmServerUtils()
+              .getObjectInstanceById(fieldRef.id!)) as Field?;
           if (field != null && field.location?.script?.id != null) {
             //get field's Script info, source code, line number, clounm number
-            Script? script = (await VmServerUtils().getObjectInstanceById(field.location!.script!.id!)) as Script?;
+            Script? script = (await VmServerUtils()
+                .getObjectInstanceById(field.location!.script!.id!)) as Script?;
             if (script != null && field.location?.tokenPos != null) {
-              int? line = script.getLineNumberFromTokenPos(field.location!.tokenPos!);
-              int? column = script.getColumnNumberFromTokenPos(field.location!.tokenPos!);
+              int? line =
+                  script.getLineNumberFromTokenPos(field.location!.tokenPos!);
+              int? column =
+                  script.getColumnNumberFromTokenPos(field.location!.tokenPos!);
               String? codeLine;
-              codeLine =
-                  script.source?.substring(field.location!.tokenPos!, field.location!.endTokenPos).split('\n').first;
-              sourceCodeLocation = SourceCodeLocation(codeLine, line, column, fieldClass.name, fieldClass.library?.uri);
+              codeLine = script.source
+                  ?.substring(
+                      field.location!.tokenPos!, field.location!.endTokenPos)
+                  .split('\n')
+                  .first;
+              sourceCodeLocation = SourceCodeLocation(codeLine, line, column,
+                  fieldClass.name, fieldClass.library?.uri);
             }
           }
         }
@@ -156,7 +175,8 @@ class LeakAnalyzer {
     if (instance != null && instance.kind == 'Closure') {
       final name = instance.closureFunction?.name;
       final owner = instance.closureFunction?.owner;
-      final info = ClosureInfo(closureFunctionName: name, closureOwner: owner?.name);
+      final info =
+          ClosureInfo(closureFunctionName: name, closureOwner: owner?.name);
       await _getClosureOwnerInfo(owner, info);
       return info;
     }
@@ -166,22 +186,28 @@ class LeakAnalyzer {
   static _getClosureOwnerInfo(dynamic ref, ClosureInfo info) async {
     if (ref?.id == null) return;
     if (ref is LibraryRef) {
-      Library? library = (await VmServerUtils().getObjectInstanceById((ref).id!)) as Library?;
+      Library? library =
+          (await VmServerUtils().getObjectInstanceById((ref).id!)) as Library?;
       info.libraries = library?.uri;
     } else if (ref is ClassRef) {
-      Class? clazz = (await VmServerUtils().getObjectInstanceById(ref.id!)) as Class?;
+      Class? clazz =
+          (await VmServerUtils().getObjectInstanceById(ref.id!)) as Class?;
       info.closureOwnerClass = clazz?.name;
       info.libraries = clazz?.library?.uri;
     } else if (ref is FuncRef) {
       if (info.funLine == null) {
         //if fun location is null, get the fun code location.
-        Func? func = (await VmServerUtils().getObjectInstanceById(ref.id!)) as Func?;
+        Func? func =
+            (await VmServerUtils().getObjectInstanceById(ref.id!)) as Func?;
         if (func?.location?.script?.id != null) {
           //get script info.
-          Script? script = (await VmServerUtils().getObjectInstanceById(func!.location!.script!.id!)) as Script?;
+          Script? script = (await VmServerUtils()
+              .getObjectInstanceById(func!.location!.script!.id!)) as Script?;
           if (script != null && func.location?.tokenPos != null) {
-            info.funLine = script.getLineNumberFromTokenPos(func.location!.tokenPos!);
-            info.funColumn = script.getColumnNumberFromTokenPos(func.location!.tokenPos!);
+            info.funLine =
+                script.getLineNumberFromTokenPos(func.location!.tokenPos!);
+            info.funColumn =
+                script.getColumnNumberFromTokenPos(func.location!.tokenPos!);
           }
         }
       }

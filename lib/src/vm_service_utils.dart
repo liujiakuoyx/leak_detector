@@ -50,7 +50,8 @@ class VmServerUtils {
       final uri = await getObservatoryUri();
       if (uri != null) {
         Uri url = convertToWebSocketUrl(serviceProtocolUrl: uri);
-        _vmService = await vmServiceConnectUri(url.toString(), log: MyVmServiceLog());
+        _vmService =
+            await vmServiceConnectUri(url.toString(), log: MyVmServiceLog());
       }
     }
     return _vmService;
@@ -105,14 +106,16 @@ class VmServerUtils {
     if (vms == null) return null;
     final mainIsolate = await findMainIsolate();
     if (mainIsolate == null || mainIsolate.id == null) return null;
-    Response keyResponse = await vms.invoke(mainIsolate.id!, library.id!, 'generateNewKey', []);
+    Response keyResponse =
+        await vms.invoke(mainIsolate.id!, library.id!, 'generateNewKey', []);
     final keyRef = InstanceRef.parse(keyResponse.json);
     String? key = keyRef?.valueAsString;
     if (key == null) return null;
     _objCache[key] = obj;
 
     try {
-      Response valueResponse = await vms.invoke(mainIsolate.id!, library.id!, "keyToObj", [keyRef!.id!]);
+      Response valueResponse = await vms
+          .invoke(mainIsolate.id!, library.id!, "keyToObj", [keyRef!.id!]);
       final valueRef = InstanceRef.parse(valueResponse.json);
       return valueRef?.id;
     } catch (e) {
@@ -124,13 +127,15 @@ class VmServerUtils {
   }
 
   ///[VmService.invokeMethod]
-  Future<String?> invokeMethod(String targetId, String method, List<String> argumentIds) async {
+  Future<String?> invokeMethod(
+      String targetId, String method, List<String> argumentIds) async {
     final vms = await getVmService();
     if (vms == null) return null;
     final mainIsolate = await findMainIsolate();
     if (mainIsolate != null && mainIsolate.id != null) {
       try {
-        Response valueResponse = await vms.invoke(mainIsolate.id!, targetId, method, argumentIds);
+        Response valueResponse =
+            await vms.invoke(mainIsolate.id!, targetId, method, argumentIds);
         final valueRef = InstanceRef.parse(valueResponse.json);
         return valueRef?.valueAsString;
       } catch (e) {}
