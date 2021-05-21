@@ -11,10 +11,10 @@ class LeakedInfo {
   /// The type of GC root which is holding a reference to the specified object.
   /// Possible values include:  * class table  * local handle  * persistent
   /// handle  * stack  * user global  * weak persistent handle  * unknown
-  String gcRootType;
+  String? gcRootType;
 
   ///Time to completion of leak detection
-  int timestamp;
+  int? timestamp;
 
   LeakedInfo(this.retainingPath, this.gcRootType, {this.timestamp}) {
     if (timestamp == null) {
@@ -40,15 +40,15 @@ class LeakedInfo {
 
 ///leaked node info
 class RetainingNode {
-  String clazz; //class name
-  String parentField; //parentField
-  bool important; //进过分析是否为重要的节点
-  String libraries; //libraries name
-  String string; //object toString()
-  String parentKey; //if object in a Map,map's key
-  int parentIndex; //if object in a List,it is index in the List
-  SourceCodeLocation sourceCodeLocation; //source code, code location
-  ClosureInfo closureInfo; //if object is closure
+  String clazz = ''; //class name
+  String? parentField; //parentField
+  bool important = false; //进过分析是否为重要的节点
+  String? libraries; //libraries name
+  String? string; //object toString()
+  String? parentKey; //if object in a Map,map's key
+  int? parentIndex; //if object in a List,it is index in the List
+  SourceCodeLocation? sourceCodeLocation; //source code, code location
+  ClosureInfo? closureInfo; //if object is closure
 
   RetainingNode(
     this.clazz, {
@@ -100,11 +100,11 @@ class RetainingNode {
 
 ///leaked field source code location
 class SourceCodeLocation {
-  String code;
-  int lineNum;
-  int columnNum;
-  String className;
-  String uri; //lib uri
+  String? code;
+  int? lineNum;
+  int? columnNum;
+  String? className;
+  String? uri; //lib uri
 
   SourceCodeLocation(this.code, this.lineNum, this.columnNum, this.className, this.uri);
 
@@ -134,12 +134,12 @@ class SourceCodeLocation {
 
 /// if leaked node if Closure
 class ClosureInfo {
-  String closureFunctionName;
-  String closureOwner; //可能是 方法、类、包
-  String closureOwnerClass; //如果owner是类=owner，owner是方法所在类
-  String libraries;
-  int funLine;
-  int funColumn;
+  String? closureFunctionName;
+  String? closureOwner; //可能是 方法、类、包
+  String? closureOwnerClass; //如果owner是类=owner，owner是方法所在类
+  String? libraries;
+  int? funLine;
+  int? funColumn;
 
   ClosureInfo({
     this.closureFunctionName,

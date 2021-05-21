@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
-
-import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:leak_detector/leak_detector.dart';
 
@@ -23,6 +20,7 @@ class _MyAppState extends State<MyApp> {
     //must init the tools
     LeakDetector().init(maxRetainingPath: 300);
     LeakDetector().onLeakedStream.listen((LeakedInfo info) {
+      info.retainingPath.forEach((element) => print(element));
       showLeakedInfoPage(_navigatorKey.currentContext, info);
     });
     LeakDetector().onEventStream.listen((DetectorEvent event) {

@@ -17,7 +17,7 @@ void showLeakedInfoPage(BuildContext context, LeakedInfo leakInfo) {
 }
 
 void showLeakedInfoListPage(BuildContext context, List<LeakedInfo> leakInfoList) {
-  if (leakInfoList == null || leakInfoList.isEmpty) return;
+  if (leakInfoList.isEmpty) return;
   BottomPopupCard.show(
     context,
     LeakPreviewPage(leakInfoList: leakInfoList),
@@ -30,7 +30,7 @@ const double _infoCardMinHeight = 180;
 class LeakPreviewPage extends StatefulWidget {
   final List<LeakedInfo> leakInfoList;
 
-  const LeakPreviewPage({Key key, @required this.leakInfoList}) : super(key: key);
+  const LeakPreviewPage({Key? key, required this.leakInfoList}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -40,21 +40,15 @@ class LeakPreviewPage extends StatefulWidget {
 
 class _LeakPreviewPageState extends State<LeakPreviewPage> {
   int _currentIndex = 0;
-  ScrollController _scrollController;
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController = ScrollController();
-  }
+  ScrollController _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
     final retainingPath = widget.leakInfoList[_currentIndex].retainingPath;
     final gcRootType = widget.leakInfoList[_currentIndex].gcRootType;
     final timestamp = widget.leakInfoList[_currentIndex].timestamp;
-    final showDate = DateTime.fromMillisecondsSinceEpoch(timestamp);
-    final count = retainingPath?.length ?? 0;
+    final showDate = DateTime.fromMillisecondsSinceEpoch(timestamp!);
+    final count = retainingPath.length;
     final paddingBottom = MediaQuery.of(context).padding.bottom;
     return Material(
       color: Colors.transparent,
@@ -212,7 +206,7 @@ class _LeakPreviewPageState extends State<LeakPreviewPage> {
                 Expanded(
                   child: RichText(
                     text: TextSpan(
-                      text: node.clazz ?? '',
+                      text: node.clazz,
                       children: [
                         if (hasField)
                           TextSpan(
@@ -277,7 +271,7 @@ class _LeakPreviewPageState extends State<LeakPreviewPage> {
                           children: [
                             if (node.closureInfo?.funLine != null)
                               TextSpan(
-                                text: '#${node.closureInfo.funLine}:${node.closureInfo.funColumn}',
+                                text: '#${node.closureInfo?.funLine}:${node.closureInfo?.funColumn}',
                                 style: TextStyle(
                                   color: Color(0xFFE7D28F),
                                   fontSize: 13,
@@ -340,28 +334,28 @@ class _LeakPreviewPageState extends State<LeakPreviewPage> {
                     padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                     child: RichText(
                       text: TextSpan(
-                        text: node.sourceCodeLocation.code ?? '',
+                        text: node.sourceCodeLocation?.code ?? '',
                         children: [
                           TextSpan(
-                            text: '\n\n${node.sourceCodeLocation.uri ?? ''}',
+                            text: '\n\n${node.sourceCodeLocation?.uri ?? ''}',
                             style: TextStyle(
                               color: Color(0xFFE2E2E2),
                               fontSize: 17,
                               fontWeight: FontWeight.normal,
                             ),
                           ),
-                          if (node.sourceCodeLocation.lineNum != null)
+                          if (node.sourceCodeLocation?.lineNum != null)
                             TextSpan(
-                              text: '#${node.sourceCodeLocation.className ?? ''}',
+                              text: '#${node.sourceCodeLocation?.className ?? ''}',
                               style: TextStyle(
                                 color: Color(0xFF7BB2DF),
                                 fontSize: 17,
                                 fontWeight: FontWeight.normal,
                               ),
                             ),
-                          if (node.sourceCodeLocation.lineNum != null)
+                          if (node.sourceCodeLocation?.lineNum != null)
                             TextSpan(
-                              text: '#${node.sourceCodeLocation.lineNum}:${node.sourceCodeLocation.columnNum}',
+                              text: '#${node.sourceCodeLocation?.lineNum}:${node.sourceCodeLocation?.columnNum}',
                               style: TextStyle(
                                 color: Color(0xFFE7D28F),
                                 fontSize: 17,
@@ -540,9 +534,9 @@ class _LeakPreviewPageState extends State<LeakPreviewPage> {
   void _deleteFromDatabase() {
     final info = widget.leakInfoList[_currentIndex];
     widget.leakInfoList.removeAt(_currentIndex);
-    LeakedRecordDatabaseHelper().deleteById(info.timestamp);
+    LeakedRecordDatabaseHelper().deleteById(info.timestamp!);
     if (widget.leakInfoList.isEmpty) {
-      Navigator.removeRoute(context, ModalRoute.of(context));
+      Navigator.removeRoute(context, ModalRoute.of(context)!);
     } else {
       setState(() {
         _scrollController.jumpTo(0.0);
@@ -597,7 +591,7 @@ class NodeCustomPainter extends CustomPainter {
 class _ClassInfoButton extends StatefulWidget {
   final RetainingNode nodeData;
 
-  const _ClassInfoButton({Key key, @required this.nodeData}) : super(key: key);
+  const _ClassInfoButton({Key? key, required this.nodeData}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {

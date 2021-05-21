@@ -42,13 +42,13 @@ class _LeakRecordingTable {
 
 ///[_LeakRecordingTable] Helper
 class LeakedRecordDatabaseHelper {
-  static LeakedRecordDatabaseHelper _instance;
+  static LeakedRecordDatabaseHelper? _instance;
 
   Future<Database> get database => _LeakDataBase._openDatabase();
 
   factory LeakedRecordDatabaseHelper() {
     _instance ??= LeakedRecordDatabaseHelper._();
-    return _instance;
+    return _instance!;
   }
 
   LeakedRecordDatabaseHelper._();
@@ -67,7 +67,6 @@ class LeakedRecordDatabaseHelper {
   }
 
   Future<void> insert(LeakedInfo data) async {
-    if (data == null) return;
     final Database db = await database;
     await db.insert(
       _LeakRecordingTable._kTableName,
@@ -77,7 +76,6 @@ class LeakedRecordDatabaseHelper {
   }
 
   Future<void> insertAll(List<LeakedInfo> data) async {
-    if (data == null) return;
     final Database db = await database;
     data.forEach((info) async {
       await db.insert(

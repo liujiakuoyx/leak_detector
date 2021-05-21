@@ -15,7 +15,7 @@ import 'vm_service_utils.dart';
 ///check leak task
 abstract class _Task<T> {
   void start() async {
-    T result;
+    T? result;
     try {
       result = await run();
     } catch (e) {
@@ -25,33 +25,33 @@ abstract class _Task<T> {
     }
   }
 
-  Future<T> run();
+  Future<T?> run();
 
   ///make sure to call after run
-  void done(T result);
+  void done(T? result);
 }
 
 class DetectorTask extends _Task<LeakedInfo> {
-  Expando expando;
+  Expando? expando;
 
-  final VoidCallback onStart;
-  final Function(LeakedInfo leakInfo) onResult;
-  final StreamSink<DetectorEvent> sink;
+  final VoidCallback? onStart;
+  final Function(LeakedInfo? leakInfo)? onResult;
+  final StreamSink<DetectorEvent>? sink;
 
   DetectorTask(
     this.expando, {
-    @required this.onResult,
+    required this.onResult,
     this.onStart,
     this.sink,
   });
 
   @override
-  void done(LeakedInfo result) {
+  void done(LeakedInfo? result) {
     onResult?.call(result);
   }
 
   @override
-  Future<LeakedInfo> run() async {
+  Future<LeakedInfo?> run() async {
     if (expando != null) {
       onStart?.call();
       if (await _maybeHasLeaked()) {
@@ -67,17 +67,16 @@ class DetectorTask extends _Task<LeakedInfo> {
 
   ///after Full GC, check whether there is a leak,
   ///if there is an analysis of the leaked reference chain
-  Future<LeakedInfo> _analyzeLeakedPathAfterGC() async {
-    List<dynamic> weakPropertyList = await _getExpandoWeakPropertyList(expando);
+  Future<LeakedInfo?> _analyzeLeakedPathAfterGC() async {
+    List<dynamic> weakPropertyList = await _getExpandoWeakPropertyList(expando!);
     expando = null; //一定要释放引用
     for (var weakProperty in weakPropertyList) {
       if (weakProperty != null) {
         final leakedInstance = await _getWeakPropertyKey(weakProperty.id);
-        if (leakedInstance != null) {
-          //start Isolate
+        if(leakedInstance != null) {
           final start = DateTime.now();
           sink?.add(DetectorEvent(DetectorEventType.startAnalyze));
-          LeakedInfo leakInfo = await compute(
+          LeakedInfo? leakInfo = await compute(
             LeakAnalyzer.analyze,
             AnalyzeData(leakedInstance, LeakDetector.maxRetainingPath),
             debugLabel: 'analyze',
@@ -92,7 +91,7 @@ class DetectorTask extends _Task<LeakedInfo> {
 
   ///some weak reference != null;
   Future<bool> _maybeHasLeaked() async {
-    List<dynamic> weakPropertyList = await _getExpandoWeakPropertyList(expando);
+    List<dynamic> weakPropertyList = await _getExpandoWeakPropertyList(expando!);
     for (var weakProperty in weakPropertyList) {
       if (weakProperty != null) {
         final leakedInstance = await _getWeakPropertyKey(weakProperty.id);
@@ -104,12 +103,12 @@ class DetectorTask extends _Task<LeakedInfo> {
 
   ///List Item has id
   Future<List<dynamic>> _getExpandoWeakPropertyList(Expando expando) async {
-    if (expando != null || (await VmServerUtils().hasVmService)) {
-      final data = (await VmServerUtils().getInstanceByObject(expando)).getFieldValueInstance('_data');
-      if (data != null) {
-        final dataObj = await VmServerUtils().getObjectInstanceById(Instance.parse(data.json).id);
-        if (dataObj != null) {
-          Instance weakListInstance = Instance.parse(dataObj.json);
+    if (await VmServerUtils().hasVmService) {
+      final data = (await VmServerUtils().getInstanceByObject(expando))?.getFieldValueInstance('_data');
+      if (data?.id != null) {
+        final dataObj = await VmServerUtils().getObjectInstanceById(data.id);
+        if (dataObj?.json != null) {
+          Instance? weakListInstance = Instance.parse(dataObj!.json!);
           if (weakListInstance != null) {
             return weakListInstance.elements ?? [];
           }
@@ -120,12 +119,11 @@ class DetectorTask extends _Task<LeakedInfo> {
   }
 
   ///get PropertyKey in [Expando]
-  Future<InstanceRef> _getWeakPropertyKey(String weakPropertyId) async {
-    if (weakPropertyId == null) return null;
+  Future<InstanceRef?> _getWeakPropertyKey(String weakPropertyId) async {
     final weakPropertyObj = await VmServerUtils().getObjectInstanceById(weakPropertyId);
     if (weakPropertyObj != null) {
       final weakPropertyInstance = Instance.parse(weakPropertyObj.json);
-      return weakPropertyInstance.propertyKey;
+      return weakPropertyInstance?.propertyKey;
     }
     return null;
   }

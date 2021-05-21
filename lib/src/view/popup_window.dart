@@ -13,50 +13,52 @@ class PopupWindow {
   /// 展示一个根据参考Widget相对位置的popupWindow
   static show(BuildContext target, Widget window,
       {double elevation = 20, //高度，阴影
-      int duration, //启动动画时间
-      PopupWindowAlign alignment, //相对目标widget位置
+      int? duration, //启动动画时间
+      PopupWindowAlign? alignment, //相对目标widget位置
       Offset offset = Offset.zero, //偏移量，为了更灵活定位
-      Function(Object result) onResult, //返回值,弹窗页面pop时回传参数
+      Function(Object result)? onResult, //返回值,弹窗页面pop时回传参数
       bool barrierDismissible = true, //点击外部区域是否可以消失
-      Color barrierColor //window背景颜色，一般是半透明的
+      Color? barrierColor //window背景颜色，一般是半透明的
       }) {
     // 参考控件的Render
-    final RenderBox targetRender = target.findRenderObject();
+    final RenderBox? targetRender = target.findRenderObject() as RenderBox?;
     // overlay管理一层层的Widget，储存了所有需要绘制的Widget
     // 这里可以理解为整个屏幕绘制的Box，即当前整个屏幕
-    final RenderBox overlay = Overlay.of(target).context.findRenderObject();
-    // 获取参考widget在overlay（屏幕）中相对位置
-    final RelativeRect position = RelativeRect.fromRect(
-      Rect.fromPoints(
-        targetRender.localToGlobal(Offset.zero, ancestor: overlay),
-        targetRender.localToGlobal(targetRender.size.bottomRight(Offset.zero), ancestor: overlay),
-      ),
-      Offset.zero & overlay.size,
-    );
+    final RenderBox? overlay = Overlay.of(target)?.context.findRenderObject() as RenderBox?;
+    if (targetRender != null && overlay != null) {
+      // 获取参考widget在overlay（屏幕）中相对位置
+      final RelativeRect position = RelativeRect.fromRect(
+        Rect.fromPoints(
+          targetRender.localToGlobal(Offset.zero, ancestor: overlay),
+          targetRender.localToGlobal(targetRender.size.bottomRight(Offset.zero), ancestor: overlay),
+        ),
+        Offset.zero & overlay.size,
+      );
 
-    /// 显示弹窗
-    _showWindow(
-      position,
-      target,
-      window,
-      alignment: alignment,
-      offset: offset,
-      duration: duration,
-      elevation: elevation,
-      onResult: onResult,
-      barrierDismissible: barrierDismissible,
-      barrierColor: barrierColor,
-    );
+      /// 显示弹窗
+      _showWindow(
+        position,
+        target,
+        window,
+        alignment: alignment,
+        offset: offset,
+        duration: duration,
+        elevation: elevation,
+        onResult: onResult,
+        barrierDismissible: barrierDismissible,
+        barrierColor: barrierColor,
+      );
+    }
   }
 
   /// 显示底部Widget
   static showBottom(
     BuildContext context,
     Widget window, {
-    double windowHeight,
+    double? windowHeight,
     Color barrierColor = Colors.black54,
     bool barrierDismissible = true,
-    Function(Object result) onResult,
+    Function(Object result)? onResult,
   }) async {
     Object result = await Navigator.of(context).push(_BottomPopupWindowRoute(
         context,
@@ -74,12 +76,11 @@ class PopupWindow {
   static showPopupWindowLeft(
     BuildContext context,
     WidgetBuilder windowBuilder, {
-    double windowWidth,
+    double? windowWidth,
     Color barrierColor = Colors.black54,
     bool barrierDismissible = true,
-    Function(Object result) onResult,
+    Function(Object result)? onResult,
   }) async {
-    assert(windowBuilder != null);
     Object result = await Navigator.of(context).push(_LeftPopupWindowRoute(
         context,
         windowBuilder,
@@ -95,12 +96,12 @@ class PopupWindow {
   /// 展示弹窗
   static _showWindow(RelativeRect position, BuildContext context, Widget window,
       {double elevation = 10,
-      int duration,
-      PopupWindowAlign alignment,
-      Offset offset,
-      bool barrierDismissible,
-      Function(Object result) onResult,
-      Color barrierColor}) async {
+      int? duration,
+      PopupWindowAlign? alignment,
+      Offset offset = Offset.zero,
+      bool barrierDismissible = false,
+      Function(Object result)? onResult,
+      Color? barrierColor}) async {
     // 启动弹窗
     Object result = await Navigator.of(context).push(_PopupWindowRoute(
         position,
@@ -122,13 +123,13 @@ class PopupWindow {
 /// PopupWindow的Route
 class _PopupWindowRoute<T> extends PopupRoute<T> {
   final RelativeRect position;
-  final PopupWindowAlign alignment;
+  final PopupWindowAlign? alignment;
   final Widget child;
   final double elevation;
-  final int duration;
+  final int? duration;
   final Offset offset;
   final bool _barrierDismissible;
-  final Color _barrierColor;
+  final Color? _barrierColor;
 
   @override
   final String barrierLabel;
@@ -139,7 +140,7 @@ class _PopupWindowRoute<T> extends PopupRoute<T> {
   // 背景颜色，默认为空
   // 这里可以支持使用半透明背景
   @override
-  Color get barrierColor => _barrierColor;
+  Color? get barrierColor => _barrierColor;
 
   // 点击外部区域是否可以关闭
   @override
@@ -155,7 +156,7 @@ class _PopupWindowRoute<T> extends PopupRoute<T> {
       child: AnimatedBuilder(
           animation: animation,
           child: child,
-          builder: (BuildContext context, Widget child) {
+          builder: (BuildContext context, Widget? child) {
             return Opacity(
               opacity: opacity.evaluate(animation),
               child: Material(
@@ -172,7 +173,7 @@ class _PopupWindowRoute<T> extends PopupRoute<T> {
   // 显示动画时长
   @override
   Duration get transitionDuration =>
-      duration == null || duration == 0 ? _kWindowDuration : Duration(milliseconds: duration);
+      duration == null || duration == 0 ? _kWindowDuration : Duration(milliseconds: duration!);
 }
 
 class _PopupMenuLayout extends SingleChildLayoutDelegate {
@@ -180,7 +181,7 @@ class _PopupMenuLayout extends SingleChildLayoutDelegate {
   final RelativeRect position;
 
   // 相对参考Widget的摆放位置
-  final PopupWindowAlign align;
+  final PopupWindowAlign? align;
 
   // 为了更加灵活摆放，增加一个偏移量
   final Offset offset;
@@ -203,7 +204,7 @@ class _PopupMenuLayout extends SingleChildLayoutDelegate {
   @override
   // 获取child的位置，size是layout自己的大小，childSize是child大小
   Offset getPositionForChild(Size size, Size childSize) {
-    double x, y;
+    double x = 0, y = 0;
     // 计算位置，提供四个方向居中，其他位置后续加
     if (align == null) {
       //默认 在控件底部左对齐
@@ -264,7 +265,7 @@ class PopupWindowAlign {
 class _BottomPopupWindowRoute<T> extends PopupRoute<T> {
   final BuildContext context;
   final Widget window;
-  final double windowHeight;
+  final double? windowHeight;
   final Color _barrierColor;
   final bool _barrierDismissible;
 
@@ -286,7 +287,7 @@ class _BottomPopupWindowRoute<T> extends PopupRoute<T> {
       removeTop: true,
       child: AnimatedBuilder(
         animation: animation,
-        builder: (BuildContext context, Widget child) {
+        builder: (BuildContext context, Widget? child) {
           return ClipRect(
             child: CustomSingleChildLayout(
               delegate: _BottomPopupWindowLayout(animation.value, contentHeight: windowHeight),
@@ -308,7 +309,7 @@ class _BottomPopupWindowRoute<T> extends PopupRoute<T> {
 class _LeftPopupWindowRoute<T> extends PopupRoute<T> {
   final BuildContext context;
   final WidgetBuilder windowBuilder;
-  final double windowWidth;
+  final double? windowWidth;
   final Color _barrierColor;
   final bool _barrierDismissible;
 
@@ -331,7 +332,7 @@ class _LeftPopupWindowRoute<T> extends PopupRoute<T> {
       removeTop: true,
       child: AnimatedBuilder(
         animation: animation,
-        builder: (BuildContext context, Widget child) {
+        builder: (BuildContext context, Widget? child) {
           return ClipRect(
             child: CustomSingleChildLayout(
               delegate: _LeftPopupWindowLayout(animation.value, contentWidth: windowWidth),
@@ -364,7 +365,7 @@ abstract class _PopupWindowLayout extends SingleChildLayoutDelegate {
 class _BottomPopupWindowLayout extends _PopupWindowLayout {
   _BottomPopupWindowLayout(double progress, {this.contentHeight}) : super(progress);
 
-  final double contentHeight;
+  final double? contentHeight;
 
   @override
   BoxConstraints getConstraintsForChild(BoxConstraints constraints) {
@@ -389,7 +390,7 @@ class _BottomPopupWindowLayout extends _PopupWindowLayout {
 class _LeftPopupWindowLayout extends _PopupWindowLayout {
   _LeftPopupWindowLayout(double progress, {this.contentWidth}) : super(progress);
 
-  final double contentWidth;
+  final double? contentWidth;
 
   @override
   BoxConstraints getConstraintsForChild(BoxConstraints constraints) {

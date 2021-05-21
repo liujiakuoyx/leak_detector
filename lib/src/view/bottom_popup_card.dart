@@ -24,7 +24,7 @@ class BottomPopupCard {
 class _CardWidget extends StatefulWidget {
   final Widget child;
 
-  const _CardWidget(this.child, {Key key}) : super(key: key);
+  const _CardWidget(this.child, {Key? key}) : super(key: key);
 
   @override
   _CardWidgetState createState() {
@@ -32,7 +32,7 @@ class _CardWidget extends StatefulWidget {
   }
 }
 
-class _CardWidgetState extends State<_CardWidget> {
+class _CardWidgetState extends State<_CardWidget> with SingleTickerProviderStateMixin{
   //手指滑动的高度
   double moveHeight = 0;
 
@@ -72,7 +72,7 @@ class _CardWidgetState extends State<_CardWidget> {
                     });
                   },
                   onVerticalDragEnd: (DragEndDetails details) =>
-                      isAnimForward ? {} : _popIfCan(details.primaryVelocity),
+                      isAnimForward ? {} : _popIfCan(details.primaryVelocity ?? 0.0),
                   onVerticalDragCancel: () => isAnimForward ? {} : _popIfCan(),
                   child: Container(
                     color: Color(0xFF353535),
@@ -112,8 +112,7 @@ class _CardWidgetState extends State<_CardWidget> {
     } else {
       //没有滑动到关闭弹窗阀值，执行归位动画。
       isAnimForward = true; //动画执行状态
-      AnimationController controller =
-          AnimationController(vsync: Overlay.of(context), duration: Duration(milliseconds: 200));
+      AnimationController controller = AnimationController(vsync: this, duration: Duration(milliseconds: 200));
       CurvedAnimation curvedAnimation = CurvedAnimation(parent: controller, curve: Curves.easeOut);
       Animation animation = Tween<double>(begin: moveHeight, end: 0).animate(curvedAnimation);
       controller.forward(); //执行动画

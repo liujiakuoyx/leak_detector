@@ -16,10 +16,10 @@ typedef LeakEventListener = void Function(DetectorEvent event);
 
 ///泄漏检测主要工具类
 class LeakDetector {
-  static LeakDetector _instance;
+  static LeakDetector? _instance;
 
   ///[VmService.getRetainingPath]limit
-  static int maxRetainingPath;
+  static int? maxRetainingPath;
 
   ///detected object
   Map<String, Expando> _watchGroup = {};
@@ -31,7 +31,7 @@ class LeakDetector {
   StreamController<LeakedInfo> _onLeakedStreamController = StreamController.broadcast();
   StreamController<DetectorEvent> _onEventStreamController = StreamController.broadcast();
 
-  DetectorTask _currentTask;
+  DetectorTask? _currentTask;
 
   Stream<LeakedInfo> get onLeakedStream => _onLeakedStreamController.stream;
 
@@ -39,7 +39,7 @@ class LeakDetector {
 
   factory LeakDetector() {
     _instance ??= LeakDetector._();
-    return _instance;
+    return _instance!;
   }
 
   void init({int maxRetainingPath = 300}) {
@@ -55,8 +55,8 @@ class LeakDetector {
   }
 
   ///Start to detect whether there is a memory leak
-  ensureReleaseAsync(String group, {int delay = 0}) async {
-    Expando expando = _watchGroup[group];
+  ensureReleaseAsync(String? group, {int delay = 0}) async {
+    Expando? expando = _watchGroup[group];
     _watchGroup.remove(group);
     group = null;
     if (expando != null) {
@@ -69,7 +69,7 @@ class LeakDetector {
             expando,
             sink: _onEventStreamController.sink,
             onStart: () => _onEventStreamController.add(DetectorEvent(DetectorEventType.check, data: group)),
-            onResult: (LeakedInfo leakInfo) {
+            onResult: (LeakedInfo? leakInfo) {
               _currentTask = null;
               _checkStartTask();
               //notify listeners
@@ -89,22 +89,19 @@ class LeakDetector {
   void _checkStartTask() {
     if (_checkTaskQueue.isNotEmpty && _currentTask == null) {
       _currentTask = _checkTaskQueue.removeFirst();
-      _currentTask.start();
+      _currentTask?.start();
     }
   }
 
   ///[group] 认为可以在一块释放的对象组，一般在一个[State]中想监听的对象
-  addWatchObject(Object obj, [String group]) {
+  addWatchObject(Object obj, String group) {
     if (LeakDetector.maxRetainingPath == null) return;
 
     _onEventStreamController.add(DetectorEvent(DetectorEventType.addObject, data: group));
 
     _checkType(obj);
-    Object key = obj;
-    if (group != null) {
-      key = group;
-    }
-    Expando expando = _watchGroup[key];
+    String key = group;
+    Expando? expando = _watchGroup[key];
     expando ??= Expando('LeakChecker$key');
     expando[obj] = true;
     _watchGroup[key] = expando;
