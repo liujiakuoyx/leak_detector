@@ -1,3 +1,7 @@
+## 0.2.0
+
+* TODO: Migrate package to null-safety
+
 ## 0.1.2+1-bate
 
 * TODO: change `FlatButton` to `TextButton`
