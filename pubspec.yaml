@@ -37,8 +37,6 @@ flutter:
         pluginClass: LeakDetectorPlugin
       macos:
         pluginClass: LeakDetectorPlugin
-      windows:
-        pluginClass: LeakDetectorPlugin
 
   # To add assets to your plugin package, add an assets section, like this:
   # assets:
