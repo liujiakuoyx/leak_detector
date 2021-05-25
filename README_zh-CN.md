@@ -78,3 +78,30 @@ getLeakedRecording().then((List<LeakedInfo> infoList) {
 <center class="half">
   <img src="https://liujiakuoyx.github.io/images/leak_detector/image3.png" width="300"/>
 </center>
+
+
+#### *真机上无法连接vm_service问题
+
+`vm_service` 存在 [Single Client Mode](https://github.com/dart-lang/sdk/blob/master/runtime/vm/service/service.md#single-client-mode)(单一客户端模式)。
+
+当`DDS(Dart Development Service)`连接到`vm_service`时，`vm_service`进入单一客户端模式，之后不再接受其他的`WebSocket`连接，而是将`WebSocket`转发给`DDS`，直到`DDS`与`vm_service`断开连接，则`vm_service`才能再次开始接受`WebSocket`请求。
+
+所以当我们连接电脑运行的时候，电脑端的`DDS`会首先连接到我们的移动端的`vm_service`的`WebSocket`服务，导致我们的`leak_detector`插件无法再次连接到`vm_service`。
+
+有两种解决办法：
+
+- `run`完成之后，断开与电脑端的连接，然后最好重启app。
+
+  如果是打好的测试包安装在手机上，是不存在上面的问题的，所以这种方法适用于给测试人员使用的情况下。
+
+- 在`flutter run`后面加上`--disable-dds`参数关闭调试端的`DDS`服务，经过测试，这样做并不会造成调试端的功能问题。
+
+  要是使用`Android Studio`也可以像下面这样配置。
+
+  
+
+![image](https://liujiakuoyx.github.io/images/leak_detector/peizhi1.png)
+
+
+
+![image](https://liujiakuoyx.github.io/images/leak_detector/peizhi2.png)

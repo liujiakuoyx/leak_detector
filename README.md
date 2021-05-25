@@ -1,3 +1,5 @@
+[中文文档](README_zh-CN.md)
+
 # leak_detector
 
 flutter Memory leak detection tool
@@ -76,3 +78,27 @@ getLeakedRecording().then((List<LeakedInfo> infoList) {
 
 
 <img src="https://liujiakuoyx.github.io/images/leak_detector/image3.png" width = "280" align=center />
+
+#### *Cannot connect to `vm_service` on real mobile devices
+
+The VM service allows for an extended feature set via the Dart Development Service (DDS) that forward all core VM service RPCs described in this document to the true VM service.
+
+So when we connect to the computer to run, the `DDS` on the computer will first connect to the `vm_service` on our mobile end, causing our `leak_detector` plugin to fail to connect to the `vm_service` again.
+
+There are two solutions:
+
+- After the `run` is complete, disconnect from the computer, and then it is best to restart the app.
+
+  If the completed test package is installed on the mobile phone, the above problem does not exist, so this method is suitable for use by testers.
+
+- Add the `--disable-dds` parameter after `flutter run` to turn off the `DDS`. After testing, this will not cause any impact on debugging
+
+  It can be configured as follows in `Android Studio`.
+
+  
+
+![image](https://liujiakuoyx.github.io/images/leak_detector/peizhi1.png)
+
+
+
+![image](https://liujiakuoyx.github.io/images/leak_detector/peizhi2.png)
