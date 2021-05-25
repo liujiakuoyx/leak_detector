@@ -1,3 +1,7 @@
+## 1.0.0
+
+* TODO: Support `macos` platform
+
 ## 0.2.0
 
 * TODO: Migrate package to null-safety
