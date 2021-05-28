@@ -1,3 +1,7 @@
+## 1.0.0+1
+
+* Change project configuration
+
 ## 1.0.0
 
 * Support `macos` platform
