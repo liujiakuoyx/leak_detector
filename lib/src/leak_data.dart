@@ -22,7 +22,7 @@ class LeakedInfo {
     }
   }
 
-  bool get isNotEmpty => retainingPath != null && retainingPath.isNotEmpty;
+  bool get isNotEmpty => retainingPath.isNotEmpty;
 
   ///to json string
   String get retainingPathJson {

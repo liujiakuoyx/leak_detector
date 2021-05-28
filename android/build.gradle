@@ -1,4 +1,4 @@
-group 'com.youdao.leak_detector'
+group 'com.ljk.leak_detector'
 version '1.0-SNAPSHOT'
 
 buildscript {
@@ -9,8 +9,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.0'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.android.tools.build:gradle:4.1.0'
     }
 }
 
@@ -18,6 +17,14 @@ rootProject.allprojects {
     repositories {
         google()
         jcenter()
+    }
+}
+
+allprojects {
+    gradle.projectsEvaluated {
+        tasks.withType(JavaCompile) {
+            options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+        }
     }
 }
 

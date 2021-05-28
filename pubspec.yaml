@@ -31,7 +31,7 @@ flutter:
   plugin:
     platforms:
       android:
-        package: com.youdao.leak_detector
+        package: com.ljk.leak_detector
         pluginClass: LeakDetectorPlugin
       ios:
         pluginClass: LeakDetectorPlugin

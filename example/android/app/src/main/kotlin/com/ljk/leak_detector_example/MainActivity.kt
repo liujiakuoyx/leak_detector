@@ -1,4 +1,4 @@
-package com.youdao.leak_detector_example
+package com.ljk.leak_detector_example
 
 import io.flutter.embedding.android.FlutterActivity
 
