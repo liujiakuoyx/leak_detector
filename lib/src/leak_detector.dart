@@ -73,9 +73,11 @@ class LeakDetector {
             sink: _onEventStreamController.sink,
             onStart: () => _onEventStreamController
                 .add(DetectorEvent(DetectorEventType.check, data: group)),
-            onResult: (LeakedInfo? leakInfo) {
+            onResult: () {
               _currentTask = null;
               _checkStartTask();
+            },
+            onLeaked: (LeakedInfo? leakInfo) {
               //notify listeners
               if (leakInfo != null && leakInfo.isNotEmpty) {
                 _onLeakedStreamController.add(leakInfo);

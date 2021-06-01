@@ -23,69 +23,16 @@ class LeakAnalyzer {
       if (retainingPath?.elements != null &&
           retainingPath!.elements!.isNotEmpty) {
         final retainingObjectList = retainingPath.elements!;
-        try {
-          List<RetainingNode> retainingPathList = [];
-          for (int i = 0; i < retainingObjectList.length; i++) {
-            var retainingObject = retainingObjectList[i];
-            //analyze node
-            if (retainingObject.value is InstanceRef) {
-              InstanceRef instanceRef = retainingObject.value as InstanceRef;
-              final String name = instanceRef.classRef?.name ?? '';
-
-              Class? clazz;
-              if (instanceRef.classRef?.id != null) {
-                //get class info
-                clazz = (await VmServerUtils()
-                        .getObjectInstanceById(instanceRef.classRef!.id!))
-                    as Class?;
-              }
-
-              SourceCodeLocation? sourceCodeLocation;
-              if (retainingObject.parentField != null && clazz != null) {
-                //parentField source code location
-                sourceCodeLocation = await _getSourceCodeLocation(
-                    retainingObject.parentField!, clazz);
-              }
-
-              String? toString;
-              if (instanceRef.id != null) {
-                //object toString
-                toString = await VmServerUtils()
-                    .invokeMethod(instanceRef.id!, 'toString', []);
-              }
-
-              //if is Map, get Key info.
-              String? keyString = await _getKeyInfo(retainingObject);
-
-              ClosureInfo? closureInfo;
-              if (retainingObject.value?.json != null) {
-                //if is Closure,get ClosureInfo
-                closureInfo = await _getClosureInfo(
-                    Instance.parse(retainingObject.value!.json));
-              }
-
-              retainingPathList.add(RetainingNode(
-                name,
-                parentField: retainingObject.parentField?.toString(),
-                parentIndex: retainingObject.parentListIndex,
-                parentKey: keyString,
-                libraries: clazz?.library?.uri,
-                sourceCodeLocation: sourceCodeLocation,
-                string: toString,
-                closureInfo: closureInfo,
-                leakedNodeType: await _getObjectType(clazz),
-              ));
-            } else if (retainingObject.value?.type != '@Context') {
-              retainingPathList.add(RetainingNode(
-                retainingObject.value?.type ?? '',
-                parentField: retainingObject.parentField?.toString(),
-              ));
-            }
+        final stream = Stream.fromIterable(retainingObjectList)
+            .asyncMap<RetainingNode?>(_defaultAnalyzeNode);
+        List<RetainingNode> retainingPathList = [];
+        (await stream.toList()).forEach((e) {
+          if (e != null) {
+            retainingPathList.add(e);
           }
-          return LeakedInfo(retainingPathList, retainingPath.gcRootType);
-        } catch (e) {
-          print('error$e');
-        }
+        });
+
+        return LeakedInfo(retainingPathList, retainingPath.gcRootType);
       }
     }
     return null;
@@ -229,6 +176,61 @@ class LeakAnalyzer {
         }
       }
       await _getClosureOwnerInfo(ref.owner, info);
+    }
+  }
+
+  static Future<RetainingNode?> _defaultAnalyzeNode(
+      RetainingObject retainingObject) async {
+    if (retainingObject.value is InstanceRef) {
+      InstanceRef instanceRef = retainingObject.value as InstanceRef;
+      final String name = instanceRef.classRef?.name ?? '';
+
+      Class? clazz;
+      if (instanceRef.classRef?.id != null) {
+        //get class info
+        clazz = (await VmServerUtils()
+            .getObjectInstanceById(instanceRef.classRef!.id!)) as Class?;
+      }
+
+      SourceCodeLocation? sourceCodeLocation;
+      if (retainingObject.parentField != null && clazz != null) {
+        //parentField source code location
+        sourceCodeLocation =
+            await _getSourceCodeLocation(retainingObject.parentField!, clazz);
+      }
+
+      String? toString;
+      if (instanceRef.id != null) {
+        //object toString
+        toString =
+            await VmServerUtils().invokeMethod(instanceRef.id!, 'toString', []);
+      }
+
+      //if is Map, get Key info.
+      String? keyString = await _getKeyInfo(retainingObject);
+
+      ClosureInfo? closureInfo;
+      if (retainingObject.value?.json != null) {
+        //if is Closure,get ClosureInfo
+        closureInfo =
+            await _getClosureInfo(Instance.parse(retainingObject.value!.json));
+      }
+      return RetainingNode(
+        name,
+        parentField: retainingObject.parentField?.toString(),
+        parentIndex: retainingObject.parentListIndex,
+        parentKey: keyString,
+        libraries: clazz?.library?.uri,
+        sourceCodeLocation: sourceCodeLocation,
+        string: toString,
+        closureInfo: closureInfo,
+        leakedNodeType: await _getObjectType(clazz),
+      );
+    } else if (retainingObject.value?.type != '@Context') {
+      return RetainingNode(
+        retainingObject.value?.type ?? '',
+        parentField: retainingObject.parentField?.toString(),
+      );
     }
   }
 }

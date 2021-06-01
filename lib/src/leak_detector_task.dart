@@ -31,23 +31,25 @@ abstract class _Task<T> {
   void done(T? result);
 }
 
-class DetectorTask extends _Task<LeakedInfo> {
+class DetectorTask extends _Task {
   Expando? expando;
 
   final VoidCallback? onStart;
-  final Function(LeakedInfo? leakInfo)? onResult;
+  final Function()? onResult;
+  final Function(LeakedInfo? leakInfo)? onLeaked;
   final StreamSink<DetectorEvent>? sink;
 
   DetectorTask(
     this.expando, {
     required this.onResult,
+    required this.onLeaked,
     this.onStart,
     this.sink,
   });
 
   @override
-  void done(LeakedInfo? result) {
-    onResult?.call(result);
+  void done(Object? result) {
+    onResult?.call();
   }
 
   @override
@@ -84,7 +86,7 @@ class DetectorTask extends _Task<LeakedInfo> {
           );
           sink?.add(DetectorEvent(DetectorEventType.endAnalyze,
               data: DateTime.now().difference(start)));
-          return leakInfo;
+          onLeaked?.call(leakInfo);
         }
       }
     }
