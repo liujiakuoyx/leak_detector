@@ -49,6 +49,7 @@ class RetainingNode {
   int? parentIndex; //if object in a List,it is index in the List
   SourceCodeLocation? sourceCodeLocation; //source code, code location
   ClosureInfo? closureInfo; //if object is closure
+  late LeakedNodeType leakedNodeType; //widget, element...
 
   RetainingNode(
     this.clazz, {
@@ -60,6 +61,7 @@ class RetainingNode {
     this.libraries,
     this.important = false,
     this.closureInfo,
+    this.leakedNodeType = LeakedNodeType.unknown,
   });
 
   @override
@@ -77,6 +79,7 @@ class RetainingNode {
       'parentField': parentField,
       'libraries': libraries,
       'important': important,
+      'leakedNodeType': leakedNodeType.index,
       'closureInfo': closureInfo?.toJson(),
     };
   }
@@ -86,6 +89,8 @@ class RetainingNode {
     parentKey = json['parentKey'];
     parentIndex = json['parentIndex'];
     string = json['string'];
+    leakedNodeType =
+        LeakedNodeType.values[(json['leakedNodeType'] ?? 0) as int];
     if (json['sourceCodeLocation'] is Map) {
       sourceCodeLocation =
           SourceCodeLocation.fromJson(json['sourceCodeLocation']);
@@ -176,4 +181,10 @@ class ClosureInfo {
   String toString() {
     return '$libraries\nclosureFunName:$closureFunctionName($funLine:$funColumn)\nowner:$closureOwner\nownerClass:$closureOwnerClass';
   }
+}
+
+enum LeakedNodeType {
+  unknown,
+  widget,
+  element,
 }

@@ -3,6 +3,7 @@
 
 import 'dart:convert';
 
+import 'package:leak_detector/src/leak_data_store.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -41,19 +42,19 @@ class _LeakRecordingTable {
 }
 
 ///[_LeakRecordingTable] Helper
-class LeakedRecordDatabaseHelper {
-  static LeakedRecordDatabaseHelper? _instance;
+class LeakedRecordSQLiteStore implements LeakedRecordStore {
+  static LeakedRecordSQLiteStore? _instance;
 
   Future<Database> get database => _LeakDataBase._openDatabase();
 
-  factory LeakedRecordDatabaseHelper() {
-    _instance ??= LeakedRecordDatabaseHelper._();
+  factory LeakedRecordSQLiteStore() {
+    _instance ??= LeakedRecordSQLiteStore._();
     return _instance!;
   }
 
-  LeakedRecordDatabaseHelper._();
+  LeakedRecordSQLiteStore._();
 
-  Future<List<LeakedInfo>> queryAll() async {
+  Future<List<LeakedInfo>> _queryAll() async {
     // Get a reference to the database.
     final Database db = await database;
     final List<Map<String, dynamic>> maps = await db.query(
@@ -66,7 +67,7 @@ class LeakedRecordDatabaseHelper {
     }
   }
 
-  Future<void> insert(LeakedInfo data) async {
+  Future<void> _insert(LeakedInfo data) async {
     final Database db = await database;
     await db.insert(
       _LeakRecordingTable._kTableName,
@@ -75,7 +76,7 @@ class LeakedRecordDatabaseHelper {
     );
   }
 
-  Future<void> insertAll(List<LeakedInfo> data) async {
+  Future<void> _insertAll(List<LeakedInfo> data) async {
     final Database db = await database;
     data.forEach((info) async {
       await db.insert(
@@ -86,7 +87,7 @@ class LeakedRecordDatabaseHelper {
     });
   }
 
-  Future<void> deleteById(int id) async {
+  Future<void> _deleteById(int id) async {
     // Get a reference to the database (获得数据库引用)
     final db = await database;
     // Remove the Data from the Database.
@@ -99,7 +100,7 @@ class LeakedRecordDatabaseHelper {
     );
   }
 
-  Future<void> deleteAll() async {
+  Future<void> _deleteAll() async {
     // Get a reference to the database (获得数据库引用)
     final db = await database;
     // Remove the Data from the Database.
@@ -125,4 +126,19 @@ class LeakedRecordDatabaseHelper {
       timestamp: int.tryParse(timestamp),
     );
   }
+
+  @override
+  void add(LeakedInfo info) => _insert(info);
+
+  @override
+  void addAll(List<LeakedInfo> list) => _insertAll(list);
+
+  @override
+  void clear() => _deleteAll();
+
+  @override
+  Future<List<LeakedInfo>> getAll() => _queryAll();
+
+  @override
+  void deleteById(int id) => _deleteById(id);
 }

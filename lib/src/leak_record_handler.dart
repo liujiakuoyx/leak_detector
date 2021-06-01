@@ -2,8 +2,8 @@
 // is governed by a BSD-style license that can be found in the LICENSE file.
 
 import 'leak_data.dart';
-import 'leak_data_base_helper.dart';
+import 'leak_data_store.dart';
 
 ///save leak info to database
 Function(LeakedInfo) saveLeakedRecord =
-    (LeakedInfo leakInfo) => LeakedRecordDatabaseHelper().insert(leakInfo);
+    (LeakedInfo leakInfo) => LeakedRecordStore().add(leakInfo);

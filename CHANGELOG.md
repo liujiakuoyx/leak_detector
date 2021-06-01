@@ -1,3 +1,7 @@
+##1.0.0+2
+
+* analyze leaked node type, `Widget`, `Element`
+
 ## 1.0.0+1
 
 * Change project configuration

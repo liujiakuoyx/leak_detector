@@ -33,7 +33,7 @@ class _CardWidget extends StatefulWidget {
 }
 
 class _CardWidgetState extends State<_CardWidget>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   //手指滑动的高度
   double moveHeight = 0;
 

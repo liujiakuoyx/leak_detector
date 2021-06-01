@@ -73,6 +73,7 @@ class LeakAnalyzer {
                 sourceCodeLocation: sourceCodeLocation,
                 string: toString,
                 closureInfo: closureInfo,
+                leakedNodeType: await _getObjectType(clazz),
               ));
             } else if (retainingObject.value?.type != '@Context') {
               retainingPathList.add(RetainingNode(
@@ -88,6 +89,22 @@ class LeakAnalyzer {
       }
     }
     return null;
+  }
+
+  static Future<LeakedNodeType> _getObjectType(Class? clazz) async {
+    if (clazz?.name == null) return LeakedNodeType.unknown;
+    if (clazz!.name == 'Widget') {
+      return LeakedNodeType.widget;
+    } else if (clazz.name == 'Element') {
+      return LeakedNodeType.element;
+    }
+    if (clazz.superClass?.id != null) {
+      Class? superClass = (await VmServerUtils()
+          .getObjectInstanceById(clazz.superClass!.id!)) as Class?;
+      return _getObjectType(superClass);
+    } else {
+      return LeakedNodeType.unknown;
+    }
   }
 
   ///0 FieldRef

@@ -2,7 +2,7 @@
 // is governed by a BSD-style license that can be found in the LICENSE file.
 
 import 'package:flutter/material.dart';
-import 'package:leak_detector/src/leak_data_base_helper.dart';
+import '../leak_data_store.dart';
 import '../leak_data.dart';
 import 'bottom_popup_card.dart';
 import 'popup_window.dart';
@@ -179,9 +179,12 @@ class _LeakPreviewPageState extends State<LeakPreviewPage> {
   Widget _node(RetainingNode node, bool isFirst, bool isLast, Color lineColor) {
     final hasField = node.parentField != null;
     final hasSourceCodeLocation = node.sourceCodeLocation != null;
+    final showSourceCodeLocation = hasSourceCodeLocation &&
+        _shouldShowCode(
+            node.sourceCodeLocation!, node.leakedNodeType, node.parentField);
     final hasMoreInfo = node.parentKey != null ||
         node.parentIndex != null ||
-        hasSourceCodeLocation;
+        showSourceCodeLocation;
     final last = isLast && !hasMoreInfo;
     final height = node.closureInfo != null ? 72.0 : 64.0;
     return Column(
@@ -228,7 +231,17 @@ class _LeakPreviewPageState extends State<LeakPreviewPage> {
                               fontSize: 16,
                               fontWeight: FontWeight.normal,
                             ),
-                          )
+                          ),
+                        if (node.leakedNodeType != LeakedNodeType.unknown)
+                          TextSpan(
+                            text:
+                                ' (${_getNodeTypeString(node.leakedNodeType)})',
+                            style: TextStyle(
+                              color: Color(0xffebcf81),
+                              fontSize: 14,
+                              fontWeight: FontWeight.normal,
+                            ),
+                          ),
                       ],
                       style: TextStyle(
                         // color: node.important ? Color(0xFFFFFFFF) : Color(0xFFF5F5F5),
@@ -312,7 +325,7 @@ class _LeakPreviewPageState extends State<LeakPreviewPage> {
           ),
         ),
         //声明代码
-        if (hasSourceCodeLocation)
+        if (showSourceCodeLocation)
           Container(
             padding: EdgeInsets.symmetric(horizontal: 20),
             child: Stack(
@@ -545,7 +558,7 @@ class _LeakPreviewPageState extends State<LeakPreviewPage> {
   void _deleteFromDatabase() {
     final info = widget.leakInfoList[_currentIndex];
     widget.leakInfoList.removeAt(_currentIndex);
-    LeakedRecordDatabaseHelper().deleteById(info.timestamp!);
+    LeakedRecordStore().deleteById(info.timestamp!);
     if (widget.leakInfoList.isEmpty) {
       Navigator.removeRoute(context, ModalRoute.of(context)!);
     } else {
@@ -553,6 +566,34 @@ class _LeakPreviewPageState extends State<LeakPreviewPage> {
         _scrollController.jumpTo(0.0);
         _currentIndex = _currentIndex.clamp(0, widget.leakInfoList.length - 1);
       });
+    }
+  }
+
+  bool _shouldShowCode(SourceCodeLocation sourceCodeLocation,
+      LeakedNodeType nodeType, String? parentField) {
+    if (parentField == null) return false;
+    if (nodeType == LeakedNodeType.element) {
+      if (parentField.startsWith('_child@') ||
+          parentField.startsWith('_children@')) {
+        return false;
+      }
+    } else if (nodeType == LeakedNodeType.widget) {
+      if (parentField.startsWith('_child@') ||
+          parentField.startsWith('_children@')) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  _getNodeTypeString(LeakedNodeType leakedNodeType) {
+    switch (leakedNodeType) {
+      case LeakedNodeType.unknown:
+        return 'unknown';
+      case LeakedNodeType.widget:
+        return 'Widget';
+      case LeakedNodeType.element:
+        return 'Element';
     }
   }
 }
