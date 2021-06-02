@@ -12,6 +12,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   GlobalKey<NavigatorState> navigatorKey = GlobalKey();
+  bool _checking = false;
 
   @override
   void initState() {
@@ -24,7 +25,15 @@ class _MyAppState extends State<MyApp> {
       showLeakedInfoPage(navigatorKey.currentContext, info);
     });
     LeakDetector().onEventStream.listen((DetectorEvent event) {
-      print(event);
+      if (event.type == DetectorEventType.startAnalyze) {
+        setState(() {
+          _checking = true;
+        });
+      } else if (event.type == DetectorEventType.endAnalyze) {
+        setState(() {
+          _checking = false;
+        });
+      }
     });
   }
 
@@ -39,14 +48,24 @@ class _MyAppState extends State<MyApp> {
         '/p4': (_) => LeakPage4(),
       },
       navigatorObservers: [
+        //used the LeakNavigatorObserver.
         LeakNavigatorObserver(
           shouldCheck: (route) {
+            //You can customize which `route` can be detected
             return route.settings.name != null && route.settings.name != '/';
           },
         ),
       ],
-      home: Material(
-        child: Container(
+      home: Scaffold(
+        floatingActionButton: FloatingActionButton(
+          child: Icon(
+            Icons.adjust,
+            color: _checking ? Colors.white : null,
+          ),
+          backgroundColor: _checking ? Colors.red : null,
+          onPressed: () {},
+        ),
+        body: Container(
           child: Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -62,7 +81,7 @@ class _MyAppState extends State<MyApp> {
                   ),
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    child: Text('jump(Stateless,widget leak)'),
+                    child: Text('jump(Stateless,widget leaked)'),
                   ),
                 ),
                 SizedBox(
@@ -79,7 +98,7 @@ class _MyAppState extends State<MyApp> {
                   ),
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    child: Text('jump(Stateful,widget leak)'),
+                    child: Text('jump(Stateful,widget leaked)'),
                   ),
                 ),
                 SizedBox(
@@ -96,7 +115,7 @@ class _MyAppState extends State<MyApp> {
                   ),
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    child: Text('jump(Stateful,state leak leak)'),
+                    child: Text('jump(Stateful,state leaked)'),
                   ),
                 ),
                 SizedBox(
@@ -113,7 +132,7 @@ class _MyAppState extends State<MyApp> {
                   ),
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    child: Text('jump(Stateful,element leak)'),
+                    child: Text('jump(Stateful,element leaked)'),
                   ),
                 ),
                 SizedBox(
