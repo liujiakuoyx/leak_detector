@@ -17,23 +17,23 @@ Initialized by `assert` in the plugin, so you don't need to turn it off when bui
 
 #### Detect
 
-On your `State` class `mixin` **StateLeakMixin**, this will automatically detect whether there is a memory leak in the `State` and its corresponding `Element` objects.
+Add `LeakNavigatorObserver` to `navigatorObservers` in `MaterialApp`, it will automatically detect whether there is a memory leak in the page's `Widget` and its corresponding `Element` object. If page's Widget is a `StatefulWidget`, it will also be automatically checked Its corresponding `State`.
 
 ```dart
 import 'package:leak_detector/leak_detector.dart';
 
-class LeakedPage extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() {
-    return TestPageState();
-  }
-}
-
-class LeakedPageState extends State<TestPage> with StateLeakMixin {
-  @override
-  Widget build(BuildContext context) {
-    return ...;
-  }
+@override
+Widget build(BuildContext context) {
+  return MaterialApp(
+    navigatorObservers: [
+      //used the LeakNavigatorObserver
+      LeakNavigatorObserver(
+        shouldCheck: (route) {
+          return route.settings.name != null && route.settings.name != '/';
+        },
+      ),
+    ],
+  );
 }
 ```
 

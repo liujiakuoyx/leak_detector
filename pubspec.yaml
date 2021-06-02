@@ -1,6 +1,6 @@
 name: leak_detector
-description: This is a plug-in used to detect page memory leaks. You can use it to detect whether there is a memory leak in `State` and `StatefulElement`.
-version: 1.0.0+2
+description: Used to detect page memory leaks. You can use it to detect whether there is a memory leak in `Widget`, `Element` and `State`.
+version: 1.0.1
 author: Liu
 repository: https://github.com/liujiakuoyx/leak_detector.git
 

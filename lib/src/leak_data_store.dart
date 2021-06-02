@@ -8,15 +8,15 @@ import '../leak_detector.dart';
 abstract class LeakedRecordStore {
   static LeakedRecordStore? _instance;
 
-  //TODO
+  //TODO add windows, linux data store.
   factory LeakedRecordStore() {
     if (_instance == null) {
       if (Platform.isAndroid || Platform.isIOS || Platform.isMacOS) {
         _instance = LeakedRecordSQLiteStore();
       } else if (Platform.isWindows) {
-        //TODO
+        //TODO windows store
       } else if (Platform.isLinux) {
-        //TODO
+        //TODO linux store
       }
     }
     return _instance!;

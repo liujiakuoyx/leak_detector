@@ -8,6 +8,7 @@ const int _defaultCheckLeakDelay = 500;
 
 ///Used on [State], it can automatically detect whether
 ///[State] and its corresponding [Stateful Element] will leak memory
+@Deprecated('used [LeakNavigatorObserver]')
 mixin StateLeakMixin<T extends StatefulWidget> on State<T> {
   ///daley check leak
   ///Sometimes some pages refer to delayed callback functions

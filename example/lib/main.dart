@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:leak_detector/leak_detector.dart';
 
 void main() {
@@ -12,16 +11,17 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  GlobalKey<NavigatorState> _navigatorKey = GlobalKey();
+  GlobalKey<NavigatorState> navigatorKey = GlobalKey();
 
   @override
   void initState() {
     super.initState();
-    //must init the tools
     LeakDetector().init(maxRetainingPath: 300);
     LeakDetector().onLeakedStream.listen((LeakedInfo info) {
-      info.retainingPath.forEach((element) => print(element));
-      showLeakedInfoPage(_navigatorKey.currentContext, info);
+      //print to console
+      info.retainingPath.forEach((node) => print(node));
+      //show preview page
+      showLeakedInfoPage(navigatorKey.currentContext, info);
     });
     LeakDetector().onEventStream.listen((DetectorEvent event) {
       print(event);
@@ -31,35 +31,113 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      navigatorKey: _navigatorKey,
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Plugin example app'),
+      navigatorKey: navigatorKey,
+      routes: {
+        '/p1': (_) => LeakPage1(),
+        '/p2': (_) => LeakPage2(),
+        '/p3': (_) => LeakPage3(),
+        '/p4': (_) => LeakPage4(),
+      },
+      navigatorObservers: [
+        LeakNavigatorObserver(
+          shouldCheck: (route) {
+            return route.settings.name != null && route.settings.name != '/';
+          },
         ),
-        body: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(_navigatorKey.currentContext)
-                      .push(MaterialPageRoute(builder: (_) => TestLeakPage()));
-                },
-                child: Text(
-                  'jump',
+      ],
+      home: Material(
+        child: Container(
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(navigatorKey.currentContext).pushNamed('/p1');
+                  },
+                  style: ButtonStyle(
+                    side: MaterialStateProperty.resolveWith(
+                      (states) => BorderSide(width: 1, color: Colors.blue),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    child: Text('jump(Stateless,widget leak)'),
+                  ),
                 ),
-              ),
-              TextButton(
-                onPressed: () {
-                  getLeakedRecording().then((List<LeakedInfo> list) {
-                    showLeakedInfoListPage(_navigatorKey.currentContext, list);
-                  });
-                },
-                child: Text(
-                  'read history',
+                SizedBox(
+                  height: 20,
                 ),
-              ),
-            ],
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(navigatorKey.currentContext).pushNamed('/p2');
+                  },
+                  style: ButtonStyle(
+                    side: MaterialStateProperty.resolveWith(
+                      (states) => BorderSide(width: 1, color: Colors.blue),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    child: Text('jump(Stateful,widget leak)'),
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(navigatorKey.currentContext).pushNamed('/p3');
+                  },
+                  style: ButtonStyle(
+                    side: MaterialStateProperty.resolveWith(
+                      (states) => BorderSide(width: 1, color: Colors.blue),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    child: Text('jump(Stateful,state leak leak)'),
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(navigatorKey.currentContext).pushNamed('/p4');
+                  },
+                  style: ButtonStyle(
+                    side: MaterialStateProperty.resolveWith(
+                      (states) => BorderSide(width: 1, color: Colors.blue),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    child: Text('jump(Stateful,element leak)'),
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                TextButton(
+                  onPressed: () {
+                    getLeakedRecording().then((List<LeakedInfo> infoList) {
+                      showLeakedInfoListPage(
+                          navigatorKey.currentContext, infoList);
+                    });
+                  },
+                  style: ButtonStyle(
+                    side: MaterialStateProperty.resolveWith(
+                      (states) => BorderSide(width: 1, color: Colors.blue),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    child: Text('read history'),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -67,28 +145,112 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-class TestLeakPage extends StatefulWidget {
+class LeakPage1 extends StatelessWidget {
   @override
-  State<StatefulWidget> createState() {
-    return TestLeakPageState();
+  Widget build(BuildContext context) {
+    return Material(
+      child: Container(
+        child: Center(
+          child: TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(this);
+            },
+            style: ButtonStyle(
+              side: MaterialStateProperty.resolveWith(
+                (states) => BorderSide(width: 1, color: Colors.blue),
+              ),
+            ),
+            child: Text('back'),
+          ),
+        ),
+      ),
+    );
   }
 }
 
-class TestLeakPageState extends State with StateLeakMixin {
+class LeakPage2 extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return LeakPageState2();
+  }
+}
+
+class LeakPageState2 extends State<LeakPage2> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('leaked page'),
+    return Material(
+      child: Container(
+        child: Center(
+          child: TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(widget);
+            },
+            style: ButtonStyle(
+              side: MaterialStateProperty.resolveWith(
+                (states) => BorderSide(width: 1, color: Colors.blue),
+              ),
+            ),
+            child: Text('back'),
+          ),
+        ),
       ),
-      body: Center(
-        child: TextButton(
-          onPressed: () {
-            //the 'context' is leaked
-            Navigator.of(context).pop(context);
-          },
-          child: Text(
-            'pop',
+    );
+  }
+}
+
+class LeakPage3 extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return LeakPageState3();
+  }
+}
+
+class LeakPageState3 extends State<LeakPage3> {
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      child: Container(
+        child: Center(
+          child: TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(this);
+            },
+            style: ButtonStyle(
+              side: MaterialStateProperty.resolveWith(
+                (states) => BorderSide(width: 1, color: Colors.blue),
+              ),
+            ),
+            child: Text('back'),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class LeakPage4 extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return LeakPageState4();
+  }
+}
+
+class LeakPageState4 extends State<LeakPage4> {
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      child: Container(
+        child: Center(
+          child: TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(context);
+            },
+            style: ButtonStyle(
+              side: MaterialStateProperty.resolveWith(
+                (states) => BorderSide(width: 1, color: Colors.blue),
+              ),
+            ),
+            child: Text('back'),
           ),
         ),
       ),

@@ -16,23 +16,24 @@ LeakDetector().init(maxRetainingPath: 300);
 
 #### 检测
 
-在你的`State`类上`mixin` **StateLeakMixin**，这样将会自动检测`State`和其对应的`Element`对象是否存在内存泄漏。
+在`MaterialApp`增加路由的监听器`LeakNavigatorObserver`，这样将会自动检测页面的`Widget`和其对应的`Element`是否存在内存泄漏，如果页面的`Widget`是`StatefulWidget`，也会自动检查其对应的`State`对象。
 
 ```dart
 import 'package:leak_detector/leak_detector.dart';
 
-class LeakedPage extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() {
-    return TestPageState();
-  }
-}
-
-class LeakedPageState extends State<TestPage> with StateLeakMixin {
-  @override
-  Widget build(BuildContext context) {
-    return ...;
-  }
+@override
+Widget build(BuildContext context) {
+  return MaterialApp(
+    navigatorObservers: [
+      //used the LeakNavigatorObserver
+      LeakNavigatorObserver(
+        //返回false则不会校验这个页面.
+        shouldCheck: (route) {
+          return route.settings.name != null && route.settings.name != '/';
+        },
+      ),
+    ],
+  );
 }
 ```
 
