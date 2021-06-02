@@ -61,7 +61,6 @@ class LeakDetector {
   ensureReleaseAsync(String? group, {int delay = 0}) async {
     Expando? expando = _watchGroup[group];
     _watchGroup.remove(group);
-    group = null;
     if (expando != null) {
       //延时检测，有些state会在页面退出之后延迟释放，这并不表示就一定是内存泄漏。
       //比如runZone就会延时释放

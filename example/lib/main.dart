@@ -25,6 +25,7 @@ class _MyAppState extends State<MyApp> {
       showLeakedInfoPage(navigatorKey.currentContext, info);
     });
     LeakDetector().onEventStream.listen((DetectorEvent event) {
+      print(event);
       if (event.type == DetectorEventType.startAnalyze) {
         setState(() {
           _checking = true;
