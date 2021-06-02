@@ -2,6 +2,7 @@
 
 * analyze leaked node type, `Widget`, `Element`
 * add `LeakNavigatorObserver`, Automatically check for memory leaks by `NavigatorObserver`
+* fix some bugs.
 
 ## 1.0.0+1
 
