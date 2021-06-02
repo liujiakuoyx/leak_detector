@@ -58,11 +58,11 @@ LeakDetector().onLeakedStream.listen((LeakedInfo info) {
 
 Preview page display:
 
-<img src="https://liujiakuoyx.github.io/images/leak_detector/image1.png" width = "280" align=center />
+<img src="https://liujiakuoyx.github.io/images/leak_detector/image2-1.png" width = "280" align=center />
 
 <img src="https://liujiakuoyx.github.io/images/leak_detector/image4.png" width = "280" align=center />
 
-<img src="https://liujiakuoyx.github.io/images/leak_detector/image2.png" width = "280" align=center />
+<img src="https://liujiakuoyx.github.io/images/leak_detector/image2-2.png" width = "280" align=center />
 
 It contains the class information of the reference chain node, the referenced attribute information, the source code of the attribute declaration, and the location of the source code (line number: column number).
 
@@ -77,7 +77,7 @@ getLeakedRecording().then((List<LeakedInfo> infoList) {
 ```
 
 
-<img src="https://liujiakuoyx.github.io/images/leak_detector/image3.png" width = "280" align=center />
+<img src="https://liujiakuoyx.github.io/images/leak_detector/image2-3.png" width = "280" align=center />
 
 #### *Cannot connect to `vm_service` on real mobile devices
 
