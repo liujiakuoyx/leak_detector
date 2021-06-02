@@ -1,3 +1,6 @@
+// Copyright (c) 2021, Jiakuo Liu. All rights reserved. Use of this source code
+// is governed by a BSD-style license that can be found in the LICENSE file.
+
 import 'package:flutter/widgets.dart';
 
 import '../leak_detector.dart';
