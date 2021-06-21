@@ -16,7 +16,7 @@ class PopupWindow {
       int? duration, //启动动画时间
       PopupWindowAlign? alignment, //相对目标widget位置
       Offset offset = Offset.zero, //偏移量，为了更灵活定位
-      Function(Object result)? onResult, //返回值,弹窗页面pop时回传参数
+      Function(Object? result)? onResult, //返回值,弹窗页面pop时回传参数
       bool barrierDismissible = true, //点击外部区域是否可以消失
       Color? barrierColor //window背景颜色，一般是半透明的
       }) {
@@ -60,9 +60,9 @@ class PopupWindow {
     double? windowHeight,
     Color barrierColor = Colors.black54,
     bool barrierDismissible = true,
-    Function(Object result)? onResult,
+    Function(Object? result)? onResult,
   }) async {
-    Object result = await Navigator.of(context).push(_BottomPopupWindowRoute(
+    Object? result = await Navigator.of(context).push(_BottomPopupWindowRoute(
         context,
         window,
         windowHeight, // 弹窗高度,某些情况下设置指定高度可以约束子布局的大小
@@ -81,9 +81,9 @@ class PopupWindow {
     double? windowWidth,
     Color barrierColor = Colors.black54,
     bool barrierDismissible = true,
-    Function(Object result)? onResult,
+    Function(Object? result)? onResult,
   }) async {
-    Object result = await Navigator.of(context).push(_LeftPopupWindowRoute(
+    Object? result = await Navigator.of(context).push(_LeftPopupWindowRoute(
         context,
         windowBuilder,
         windowWidth, // 弹窗高度,某些情况下设置指定高度可以约束子布局的大小
@@ -102,10 +102,10 @@ class PopupWindow {
       PopupWindowAlign? alignment,
       Offset offset = Offset.zero,
       bool barrierDismissible = false,
-      Function(Object result)? onResult,
+      Function(Object? result)? onResult,
       Color? barrierColor}) async {
     // 启动弹窗
-    Object result = await Navigator.of(context).push(_PopupWindowRoute(
+    Object? result = await Navigator.of(context).push(_PopupWindowRoute(
         position,
         window,
         elevation,
