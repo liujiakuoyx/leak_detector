@@ -1,3 +1,7 @@
+## 1.0.1+2
+
+* fix bug
+
 ## 1.0.1+1
 
 * reduce dart version to `2.12.0`
