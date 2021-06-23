@@ -1,3 +1,7 @@
+## 1.0.1+3
+
+* add `kotlin-android` to android
+
 ## 1.0.1+2
 
 * fix bug
