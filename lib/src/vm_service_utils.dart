@@ -2,6 +2,7 @@
 // is governed by a BSD-style license that can be found in the LICENSE file.
 
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:vm_service/vm_service.dart';
 import 'package:vm_service/vm_service_io.dart';
@@ -51,7 +52,13 @@ class VmServerUtils {
       if (uri != null) {
         Uri url = convertToWebSocketUrl(serviceProtocolUrl: uri);
         _vmService =
-            await vmServiceConnectUri(url.toString(), log: MyVmServiceLog());
+            await vmServiceConnectUri(url.toString()).catchError((error) {
+          if (error is SocketException) {
+            //dds is enable
+            print('vm_service connection refused, Try:');
+            print('run \'flutter run\' with --disable-dds to disable dds.');
+          }
+        });
       }
     }
     return _vmService;
@@ -233,17 +240,5 @@ extension MyInstance on Instance {
       return field.value;
     }
     return null;
-  }
-}
-
-class MyVmServiceLog extends Log {
-  @override
-  void severe(String message) {
-    print('severe:$message');
-  }
-
-  @override
-  void warning(String message) {
-    print('warning:$message');
   }
 }
