@@ -232,6 +232,7 @@ class LeakAnalyzer {
         parentField: retainingObject.parentField?.toString(),
       );
     }
+    return null;
   }
 }
 

@@ -2,7 +2,6 @@
 // is governed by a BSD-style license that can be found in the LICENSE file.
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 const int _windowPopupDuration = 200; // 默认启动动画时间
 const Duration _kWindowDuration = Duration(milliseconds: _windowPopupDuration);

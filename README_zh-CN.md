@@ -99,10 +99,10 @@ getLeakedRecording().then((List<LeakedInfo> infoList) {
 
   要是使用`Android Studio`也可以像下面这样配置。
 
-  
+**注意**：在 [Pull Request #80900](https://github.com/flutter/flutter/pull/80900) 合入之后，`--disable-dds`被改名为`--no-dds`
+
 
 ![image](https://liujiakuoyx.github.io/images/leak_detector/peizhi1.png)
-
 
 
 ![image](https://liujiakuoyx.github.io/images/leak_detector/peizhi2.png)

@@ -142,8 +142,7 @@ class _MyAppState extends State<MyApp> {
                 TextButton(
                   onPressed: () {
                     getLeakedRecording().then((List<LeakedInfo> infoList) {
-                      showLeakedInfoListPage(
-                          navigatorKey.currentContext, infoList);
+                      showLeakedInfoListPage(navigatorKey.currentContext, infoList);
                     });
                   },
                   style: ButtonStyle(
@@ -256,22 +255,29 @@ class LeakPage4 extends StatefulWidget {
 }
 
 class LeakPageState4 extends State<LeakPage4> {
+  TextEditingController _controller = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Material(
       child: Container(
-        child: Center(
-          child: TextButton(
-            onPressed: () {
-              Navigator.of(context).pop(context);
-            },
-            style: ButtonStyle(
-              side: MaterialStateProperty.resolveWith(
-                (states) => BorderSide(width: 1, color: Colors.blue),
-              ),
+        child: Column(
+          children: [
+            TextField(
+              controller: _controller,
             ),
-            child: Text('back'),
-          ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(context);
+              },
+              style: ButtonStyle(
+                side: MaterialStateProperty.resolveWith(
+                  (states) => BorderSide(width: 1, color: Colors.blue),
+                ),
+              ),
+              child: Text('back'),
+            )
+          ],
         ),
       ),
     );

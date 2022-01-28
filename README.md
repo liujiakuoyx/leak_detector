@@ -94,11 +94,11 @@ There are two solutions:
 - Add the `--disable-dds` parameter after `flutter run` to turn off the `DDS`. After testing, this will not cause any impact on debugging
 
   It can be configured as follows in `Android Studio`.
-
+  
+After [Pull Request #80900](https://github.com/flutter/flutter/pull/80900) is merged, `--disable-dds` was renamed to `--no-dds`
   
 
 ![image](https://liujiakuoyx.github.io/images/leak_detector/peizhi1.png)
-
 
 
 ![image](https://liujiakuoyx.github.io/images/leak_detector/peizhi2.png)
