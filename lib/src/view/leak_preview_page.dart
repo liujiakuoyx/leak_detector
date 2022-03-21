@@ -45,6 +45,12 @@ class _LeakPreviewPageState extends State<LeakPreviewPage> {
   ScrollController _scrollController = ScrollController();
 
   @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final retainingPath = widget.leakInfoList[_currentIndex].retainingPath;
     final gcRootType = widget.leakInfoList[_currentIndex].gcRootType;
@@ -89,6 +95,7 @@ class _LeakPreviewPageState extends State<LeakPreviewPage> {
             ),
             Expanded(
               child: Scrollbar(
+                controller: _scrollController,
                 child: ListView.builder(
                   physics: BouncingScrollPhysics(),
                   padding: EdgeInsets.all(0),
