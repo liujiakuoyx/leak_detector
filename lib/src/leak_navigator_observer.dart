@@ -77,7 +77,7 @@ class LeakNavigatorObserver extends NavigatorObserver {
         final key = _getRouteKey(route);
         if (element is StatefulElement || element is StatelessElement) {
           //start check
-          LeakDetector().ensureReleaseAsync(key, delay: _defaultCheckLeakDelay);
+          LeakDetector().ensureReleaseAsync(key, delay: checkLeakDelay);
         }
       }
 
