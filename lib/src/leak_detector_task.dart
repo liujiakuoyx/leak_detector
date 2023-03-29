@@ -75,7 +75,7 @@ class DetectorTask extends _Task {
     for (var weakProperty in weakPropertyList) {
       if (weakProperty != null) {
         final leakedInstance = await _getWeakPropertyKey(weakProperty.id);
-        if (leakedInstance != null) {
+        if (leakedInstance != null && leakedInstance.id != "objects/null") {
           final start = DateTime.now();
           sink?.add(DetectorEvent(DetectorEventType.startAnalyze));
           LeakedInfo? leakInfo = await compute(

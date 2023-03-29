@@ -51,14 +51,15 @@ class VmServerUtils {
       final uri = await getObservatoryUri();
       if (uri != null) {
         Uri url = convertToWebSocketUrl(serviceProtocolUrl: uri);
-        _vmService =
-            await vmServiceConnectUri(url.toString()).catchError((error) {
+        try {
+          _vmService = await vmServiceConnectUri(url.toString());
+        } catch (error) {
           if (error is SocketException) {
             //dds is enable
             print('vm_service connection refused, Try:');
             print('run \'flutter run\' with --disable-dds to disable dds.');
           }
-        });
+        }
       }
     }
     return _vmService;

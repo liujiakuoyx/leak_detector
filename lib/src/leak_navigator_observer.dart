@@ -102,11 +102,15 @@ class LeakNavigatorObserver extends NavigatorObserver {
       route.subtreeContext?.visitChildElements((child) {
         //Builder
         child.visitChildElements((child) {
-          //Semantics
-          child.visitChildElements((child) {
-            //My Page
+          if (child.widget is Semantics) {
+            //Semantics
+            child.visitChildElements((child) {
+              //My Page
+              element = child;
+            });
+          } else {
             element = child;
-          });
+          }
         });
       });
     }

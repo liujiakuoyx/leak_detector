@@ -22,7 +22,7 @@ class _MyAppState extends State<MyApp> {
       //print to console
       info.retainingPath.forEach((node) => print(node));
       //show preview page
-      showLeakedInfoPage(navigatorKey.currentContext, info);
+      showLeakedInfoPage(navigatorKey.currentContext!, info);
     });
     LeakDetector().onEventStream.listen((DetectorEvent event) {
       print(event);
@@ -51,6 +51,7 @@ class _MyAppState extends State<MyApp> {
       navigatorObservers: [
         //used the LeakNavigatorObserver.
         LeakNavigatorObserver(
+          checkLeakDelay: 0,
           shouldCheck: (route) {
             //You can customize which `route` can be detected
             return route.settings.name != null && route.settings.name != '/';
@@ -73,7 +74,7 @@ class _MyAppState extends State<MyApp> {
               children: [
                 TextButton(
                   onPressed: () {
-                    Navigator.of(navigatorKey.currentContext).pushNamed('/p1');
+                    Navigator.of(navigatorKey.currentContext!).pushNamed('/p1');
                   },
                   style: ButtonStyle(
                     side: MaterialStateProperty.resolveWith(
@@ -90,7 +91,7 @@ class _MyAppState extends State<MyApp> {
                 ),
                 TextButton(
                   onPressed: () {
-                    Navigator.of(navigatorKey.currentContext).pushNamed('/p2');
+                    Navigator.of(navigatorKey.currentContext!).pushNamed('/p2');
                   },
                   style: ButtonStyle(
                     side: MaterialStateProperty.resolveWith(
@@ -107,7 +108,7 @@ class _MyAppState extends State<MyApp> {
                 ),
                 TextButton(
                   onPressed: () {
-                    Navigator.of(navigatorKey.currentContext).pushNamed('/p3');
+                    Navigator.of(navigatorKey.currentContext!).pushNamed('/p3');
                   },
                   style: ButtonStyle(
                     side: MaterialStateProperty.resolveWith(
@@ -124,7 +125,7 @@ class _MyAppState extends State<MyApp> {
                 ),
                 TextButton(
                   onPressed: () {
-                    Navigator.of(navigatorKey.currentContext).pushNamed('/p4');
+                    Navigator.of(navigatorKey.currentContext!).pushNamed('/p4');
                   },
                   style: ButtonStyle(
                     side: MaterialStateProperty.resolveWith(
@@ -142,7 +143,8 @@ class _MyAppState extends State<MyApp> {
                 TextButton(
                   onPressed: () {
                     getLeakedRecording().then((List<LeakedInfo> infoList) {
-                      showLeakedInfoListPage(navigatorKey.currentContext, infoList);
+                      showLeakedInfoListPage(
+                          navigatorKey.currentContext!, infoList);
                     });
                   },
                   style: ButtonStyle(
