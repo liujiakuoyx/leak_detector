@@ -1,6 +1,6 @@
 ## 1.1.0
 
-* upgrade Gradle plugin
+* upgrade Gradle plugin and dependencies
 
 ## 1.0.1+4
 

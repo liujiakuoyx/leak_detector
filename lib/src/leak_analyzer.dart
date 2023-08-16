@@ -237,7 +237,7 @@ class LeakAnalyzer {
 }
 
 class AnalyzeData {
-  final InstanceRef? leakedInstance;
+  final ObjRef? leakedInstance;
   final int? maxRetainingPath;
 
   AnalyzeData(this.leakedInstance, this.maxRetainingPath);

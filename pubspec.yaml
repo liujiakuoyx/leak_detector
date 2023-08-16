@@ -5,15 +5,15 @@ author: Liu
 repository: https://github.com/liujiakuoyx/leak_detector.git
 
 environment:
-  sdk: ">=2.12.0 <4.0.0"
-  flutter: ">=2.8.0"
+  sdk: ">=2.18.0 <4.0.0"
+  flutter: ">=3.3.0"
 
 dependencies:
   flutter:
     sdk: flutter
   sqflite: ^2.2.6
-  path: ^1.8.0
-  vm_service: ^9.0.0
+  path: ^1.8.2
+  vm_service: ^11.2.0
 
 dev_dependencies:
   flutter_test:

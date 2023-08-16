@@ -124,7 +124,7 @@ class DetectorTask extends _Task {
   }
 
   ///get PropertyKey in [Expando]
-  Future<InstanceRef?> _getWeakPropertyKey(String weakPropertyId) async {
+  Future<ObjRef?> _getWeakPropertyKey(String weakPropertyId) async {
     final weakPropertyObj =
         await VmServerUtils().getObjectInstanceById(weakPropertyId);
     if (weakPropertyObj != null) {
