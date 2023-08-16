@@ -1,3 +1,7 @@
+## 1.1.0
+
+* upgrade Gradle plugin
+
 ## 1.0.1+4
 
 * fix bug
