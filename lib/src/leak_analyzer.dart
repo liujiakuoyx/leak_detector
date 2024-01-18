@@ -98,12 +98,12 @@ class LeakAnalyzer {
   }
 
   static Future<SourceCodeLocation?> _getSourceCodeLocation(
-      String? parentField, Class clazz) async {
+      dynamic parentField, Class clazz) async {
     SourceCodeLocation? sourceCodeLocation;
     if (parentField != null && clazz.name != '_Closure') {
       //get field and owner class
       List? fieldAndClass = await getFieldAndClassByName(
-          clazz, Uri.encodeQueryComponent(parentField));
+          clazz, Uri.encodeQueryComponent('$parentField'));
       if (fieldAndClass != null) {
         FieldRef fieldRef = fieldAndClass[0];
         Class fieldClass = fieldAndClass[1];
@@ -195,8 +195,8 @@ class LeakAnalyzer {
       SourceCodeLocation? sourceCodeLocation;
       if (retainingObject.parentField != null && clazz != null) {
         //parentField source code location
-        sourceCodeLocation =
-            await _getSourceCodeLocation(retainingObject.parentField!, clazz);
+          sourceCodeLocation =
+              await _getSourceCodeLocation(retainingObject.parentField!, clazz);
       }
 
       String? toString;
